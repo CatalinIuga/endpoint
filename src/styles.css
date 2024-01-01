@@ -1,0 +1,75 @@
+@import url("https://fonts.cdnfonts.com/css/jetbrains-mono");
+@import url("https://fonts.cdnfonts.com/css/fira-code-2");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply m-0 h-full w-full overflow-auto bg-bg p-0 font-mono text-primary;
+}
+
+*:root {
+  @apply selection:bg-indigo-500/50 selection:text-primary;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply h-4 rounded-sm bg-bg4 hover:bg-bg5;
+}
+
+/* PRISM JS THEME FOR URL PARSING */
+.token {
+  @apply text-primary;
+}
+
+.token.scheme {
+  @apply text-green-400;
+}
+
+.token.host {
+  @apply text-blue-500;
+}
+
+.token.user-info {
+  @apply text-pink-400;
+}
+
+.token.user-info-delimiter {
+  @apply text-red-400;
+}
+
+.token.scheme-delimiter,
+.authority-delimiter,
+.path-separator {
+  @apply text-ternary/40;
+}
+
+.token.port,
+.port-delimiter,
+.fragment,
+.fragment-delimiter {
+  @apply text-ternary;
+}
+
+.token.path {
+  @apply text-indigo-400;
+}
+
+.token.query-delimiter,
+.pair,
+.pair-delimiter {
+  @apply text-orange-400;
+}
+.token.query .key,
+.value {
+  @apply text-orange-300;
+}
