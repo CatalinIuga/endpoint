@@ -1,6 +1,8 @@
 import { FetchOptions, HttpVerb, fetch } from "@tauri-apps/api/http";
+// @ts-expect-error -> Deno clears this!
+import prettierPluginHtml from "https://unpkg.com/prettier@3.1.1/plugins/html.mjs";
 import { defineStore } from "pinia";
-import * as prittier from "prettier";
+import * as prettier from "prettier/standalone";
 import { ref } from "vue";
 import {
   type Auth,
@@ -13,7 +15,7 @@ import { statusText } from "../utils/statusText";
 export const useStore = defineStore("crld", () => {
   // REQUEST STATES
   // -> this handles the user input
-  const url = ref("https://google.com");
+  const url = ref("https://example.com");
   const method = ref<HttpVerb>("GET");
   const parameters = ref<Array<Parameter>>([]);
   const headers = ref<Array<Header>>([]);
@@ -63,14 +65,16 @@ export const useStore = defineStore("crld", () => {
 
     try {
       // Simulate a delay of 10 seconds
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await fetch(url.value, options);
 
-      // Not sure about this one yet, but hey it works!
-      const formated = await prittier.format(response.data as string, {
-        parser: "babel",
+      // This is fine, just need to check response headers for content type and assign the correct parser
+      const formated = await prettier.format(response.data as string, {
+        parser: "html",
+        plugins: [prettierPluginHtml],
       });
+      // const formated = JSON.stringify(await prettier.getSupportInfo(), null, 2);
 
       responsePreview.value = {
         status: response.status,
