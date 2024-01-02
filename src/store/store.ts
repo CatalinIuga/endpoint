@@ -2,8 +2,8 @@ import { FetchOptions, HttpVerb, fetch } from "@tauri-apps/api/http";
 // @ts-expect-error -> Deno clears this!
 import prettierPluginHtml from "https://unpkg.com/prettier@3.1.1/plugins/html.mjs";
 import { defineStore } from "pinia";
-import * as prettier from "prettier/standalone";
-import { ref } from "vue";
+import prettier from "prettier/standalone";
+import { ref, shallowRef, toRaw } from "vue";
 import {
   type Auth,
   type Body,
@@ -24,13 +24,15 @@ export const useStore = defineStore("crld", () => {
 
   // RESPONSE STATES
   // -> this gets sent back to the UI for display
-  const requestPreview = ref<{
+
+  // actually this should not be a ref since it's not reactive
+  const requestPreview = shallowRef<{
     url: string;
     method: HttpVerb;
-    parameters: Array<Parameter>;
-    headers: Array<Header>;
-    auth: Auth;
-    body: Body;
+    parameters: Array<Parameter>; // filter this
+    headers: Array<Header>; // filter this
+    auth: Auth; // filter this
+    body: Body; // filter this
   } | null>(null);
 
   const responsePreview = ref<{
@@ -51,30 +53,36 @@ export const useStore = defineStore("crld", () => {
     requestPreview.value = {
       url: url.value,
       method: method.value,
-      parameters: parameters.value,
-      headers: headers.value,
-      auth: auth.value,
-      body: body.value,
+      parameters: toRaw(parameters.value),
+      headers: toRaw(headers.value),
+      auth: toRaw(auth.value),
+      body: toRaw(body.value),
     };
+    console.log(requestPreview.value);
 
     const options: FetchOptions = {
       responseType: 2, // Text
       method: method.value,
-      timeout: 10000,
+      timeout: 6000,
     };
 
     try {
       // Simulate a delay of 10 seconds
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await fetch(url.value, options);
 
-      // This is fine, just need to check response headers for content type and assign the correct parser
-      const formated = await prettier.format(response.data as string, {
-        parser: "html",
-        plugins: [prettierPluginHtml],
-      });
-      // const formated = JSON.stringify(await prettier.getSupportInfo(), null, 2);
+      const data = response.data as string;
+
+      // at this point i think i will just use the basic format if this fails...
+      // TODO compare no fromat vs my basic format function
+      const formated = await prettier
+        .format(response.data as string, {
+          parser: "html",
+          htmlWhitespaceSensitivity: "ignore",
+          plugins: [prettierPluginHtml],
+        })
+        .catch(() => data);
 
       responsePreview.value = {
         status: response.status,

@@ -8,13 +8,22 @@ import BodyViewer from "./Highlighting/BodyViewer.vue";
 const selectedTab = ref("Request");
 
 const store = useStore();
-const {
-  method,
-  responsePreview,
-  requestPreview,
-  requestLoading,
-  requestError,
-} = storeToRefs(store);
+
+const { responsePreview, requestPreview, requestLoading, requestError } =
+  storeToRefs(store);
+
+const path = () => {
+  if (requestPreview.value) {
+    let url = new URL(requestPreview.value.url);
+    const params = requestPreview.value.parameters
+      .filter((param) => param.checked && param.key !== "")
+      .map((param) => `${param.key}=${param.value}`)
+      .join("&");
+    url.search = params ? url.search + "&" + params : url.search;
+    return url.pathname + url.search;
+  }
+  return "";
+};
 </script>
 
 <template>
@@ -36,9 +45,9 @@ const {
         <span
           v-if="requestPreview"
           class="font-bold"
-          :class="[coloredHttpMethod(method)]"
+          :class="[coloredHttpMethod(requestPreview.method)]"
         >
-          {{ method }}
+          {{ requestPreview.method }}
         </span>
       </button>
 
@@ -124,11 +133,14 @@ const {
     <div v-if="selectedTab === 'Request' && requestPreview" class="p-2">
       <!-- METHOD, PATH, STATUS VIEWER -->
       <div class="flex items-center gap-2 font-bold">
-        <div class="font-extrabold" :class="[coloredHttpMethod(method)]">
+        <div
+          class="font-extrabold"
+          :class="[coloredHttpMethod(requestPreview.method)]"
+        >
           {{ requestPreview?.method }}
         </div>
         <div class="overflow-hidden break-words text-primary">
-          {{ requestPreview?.url }}
+          {{ path() }}
         </div>
         <div class="text-ternary opacity-80">HTTP/1.1</div>
       </div>
@@ -140,6 +152,9 @@ const {
           <span class="text-primary">{{ header.value }}</span>
         </div>
       </div>
+      <pre>
+        {{ JSON.stringify(requestPreview, null, 4) }}
+      </pre>
     </div>
 
     <!-- RESPONSE VIEWER -->
@@ -170,12 +185,24 @@ const {
           />
         </svg>
       </div>
-      <!-- <iframe
+      <iframe
         v-else-if="responsePreview"
         class="h-full w-full p-2"
-        :srcdoc="responsePreview.body"
-      /> -->
+        sandbox="allow-scripts"
+        :srcdoc="`<base href='${requestPreview?.url}'>` + responsePreview.body"
+      />
       <BodyViewer v-if="responsePreview" />
     </div>
+  </div>
+
+  <!-- Menu -->
+  <div
+    class="flex w-full justify-between border-t-[1px] border-primary border-opacity-5 px-2 py-2"
+  >
+    <div class="flex gap-[2px] text-xs text-ternary">
+      <!-- Response type menu -->
+      <!-- Preview toggle for HTML -->
+    </div>
+    <button class="rounded-md pb-2 hover:bg-hovered">...</button>
   </div>
 </template>
