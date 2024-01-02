@@ -7,6 +7,7 @@ import {
   type Header,
   type Parameter,
 } from "../types/types";
+import { statusText } from "../utils/statusText";
 
 export const useStore = defineStore("crld", () => {
   // REQUEST STATES
@@ -20,16 +21,35 @@ export const useStore = defineStore("crld", () => {
 
   // RESPONSE STATES
   // -> this gets sent back to the UI for display
-  const requestSent = ref(false);
+  const requestPreview = ref<{
+    url: string;
+    method: HttpVerb;
+    parameters: Array<Parameter>;
+    headers: Array<Header>;
+    auth: Auth;
+    body: Body;
+  } | null>(null);
+  const responsePreview = ref<{
+    status: number;
+    statusText: string;
+    headers: Record<string, string>;
+    body: string;
+  } | null>(null);
   const requestLoading = ref(false);
   const requestError = ref("");
-  const responseBody = ref("");
-  const responseHeaders = ref<Record<string, string>>({});
 
   // #YOLO
   const sendRequest = async () => {
-    requestSent.value = true;
-    resetResponseStates();
+    resetPreview();
+
+    requestPreview.value = {
+      url: url.value,
+      method: method.value,
+      parameters: parameters.value,
+      headers: headers.value,
+      auth: auth.value,
+      body: body.value,
+    };
 
     const options: FetchOptions = {
       responseType: 2,
@@ -39,39 +59,41 @@ export const useStore = defineStore("crld", () => {
 
     await fetch(url.value, options)
       .then((res) => {
-        responseBody.value = res.data as string;
-        responseHeaders.value = res.headers;
+        responsePreview.value = {
+          status: res.status,
+          statusText: statusText(res.status),
+          headers: res.headers,
+          body: res.data as string, // TODO - this is wack af
+        };
       })
       .catch((err) => {
         requestError.value = err;
-        console.log(err);
+        console.error(err);
       });
 
     requestLoading.value = false;
   };
 
   // HELPERS
-  const resetResponseStates = () => {
-    requestSent.value = false;
-    requestLoading.value = true;
+  const resetPreview = () => {
+    requestLoading.value = false;
     requestError.value = "";
-    responseBody.value = "";
-    responseHeaders.value = {};
+    requestPreview.value = null;
+    responsePreview.value = null;
   };
 
   return {
-    responseBody,
-    requestSent,
-    responseHeaders,
+    requestPreview,
     requestError,
     requestLoading,
+    responsePreview,
+    resetPreview,
     url,
     method,
     parameters,
     headers,
     auth,
     body,
-    resetResponseStates,
     sendRequest,
   };
 });

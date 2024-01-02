@@ -8,7 +8,7 @@ import { useStore } from "../../store/store";
 import { readonlyExtensions } from "./config";
 
 const store = useStore();
-const { responseBody } = storeToRefs(store);
+const { responsePreview } = storeToRefs(store);
 
 const baseCompartment = new Compartment();
 const extensions = baseCompartment.of(readonlyExtensions);
@@ -26,7 +26,7 @@ const handleReady = (payload: any) => {
   <!-- TODO ADD NEW STYLES FOR THIS 🫠 -->
   <Codemirror
     disabled
-    v-model.value="responseBody"
+    v-model.value="responsePreview!.body"
     style="height: 100%; width: 100%; padding: 4px 4px"
     :autofocus="true"
     :tab-size="2"

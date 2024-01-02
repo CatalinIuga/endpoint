@@ -21,4 +21,18 @@ function coloredHttpMethod(method: string) {
   }
 }
 
-export { coloredHttpMethod };
+function coloredHttpStatus(status: number) {
+  if (status >= 200 && status < 300) {
+    return `text-green-400`;
+  } else if (status >= 300 && status < 400) {
+    return `text-yellow-400`;
+  } else if (status >= 400 && status < 500) {
+    return `text-orange-400`;
+  } else if (status >= 500 && status < 600) {
+    return `text-red-400`;
+  } else {
+    return `text-pink-400`;
+  }
+}
+
+export { coloredHttpMethod, coloredHttpStatus };
