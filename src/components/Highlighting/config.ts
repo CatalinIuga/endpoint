@@ -5,6 +5,7 @@ import {
   completionKeymap,
 } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { html } from "@codemirror/lang-html";
 import {
   bracketMatching,
   defaultHighlightStyle,
@@ -85,6 +86,7 @@ export const readonlyBasicSetup: Extension = (() => [
   rectangularSelection(),
   crosshairCursor(),
   highlightActiveLine(),
+  html(),
 ])();
 
 export const readonlyExtensions = [

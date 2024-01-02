@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useStore } from "../store/store";
 import { coloredHttpMethod, coloredHttpStatus } from "../utils/coloring";
 import BodyViewer from "./Highlighting/BodyViewer.vue";
@@ -15,30 +15,6 @@ const {
   requestLoading,
   requestError,
 } = storeToRefs(store);
-
-const url = computed(() => {
-  if (requestPreview.value?.url) {
-    return new URL(requestPreview.value.url).origin;
-  }
-  return "";
-});
-
-// TODO this is just wrong ....
-const path = computed(() => {
-  const url = requestPreview.value?.url;
-  if (!url) return "";
-  const path = new URL(url).pathname;
-  const params = requestPreview.value?.parameters;
-  if (params) {
-    const paramKeys = Object.keys(params);
-    if (paramKeys.length > 0) {
-      return `${path}?${paramKeys
-        .map((key) => `${key}=${params[key as keyof typeof params]}`)
-        .join("&")}`;
-    }
-  }
-  return path;
-});
 </script>
 
 <template>
@@ -48,15 +24,11 @@ const path = computed(() => {
   >
     <div class="flex gap-[2px] text-xs text-ternary">
       <button
-        :disabled="!requestPreview"
-        class="relative flex items-center gap-2 rounded-lg px-4 py-2"
+        class="relative flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-hovered"
         :class="[
           selectedTab === 'Request' && requestPreview !== null
             ? 'bg-selected text-primary hover:bg-selected'
             : '',
-          requestPreview === null
-            ? 'cursor-not-allowed opacity-50'
-            : 'hover:bg-hovered',
         ]"
         @click="selectedTab = 'Request'"
       >
@@ -69,20 +41,40 @@ const path = computed(() => {
           {{ method }}
         </span>
       </button>
+
       <button
-        :disabled="!responsePreview"
-        class="relative flex items-center gap-2 rounded-lg px-4 py-2"
+        class="relative flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-hovered"
         :class="[
           selectedTab === 'Response' && responsePreview !== null
             ? 'bg-selected text-primary hover:bg-selected'
             : '',
-          responsePreview === null
-            ? 'cursor-not-allowed opacity-50'
-            : 'hover:bg-hovered',
         ]"
         @click="selectedTab = 'Response'"
       >
         Request
+        <span v-if="requestLoading" class="font-bold text-primary">
+          <svg
+            class="size-2 animate-spin text-primary"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
+          </svg>
+        </span>
+
         <span
           v-if="responsePreview"
           class="font-extrabold"
@@ -93,38 +85,11 @@ const path = computed(() => {
       </button>
     </div>
     <button
-      @click="store.resetPreview"
+      @click="store.preparePreview"
       class="rounded-md pb-2 hover:bg-hovered"
     >
       ...
     </button>
-  </div>
-
-  <!-- Loading Spinner -->
-  <div
-    v-if="requestLoading"
-    class="flex h-full w-full items-center justify-center"
-  >
-    <svg
-      class="size-10 animate-spin text-primary"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        class="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        stroke-width="4"
-      />
-      <path
-        class="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-      />
-    </svg>
   </div>
 
   <!-- Error Message -->
@@ -147,16 +112,25 @@ const path = computed(() => {
 
   <!-- Request&Response Viewers -->
   <div class="h-full w-full overflow-y-auto">
-    <div v-if="selectedTab === 'Request'" class="p-2">
+    <!-- PLACEHOLDER -->
+    <div
+      v-if="!requestLoading && !requestPreview"
+      class="flex h-full w-full items-center justify-center"
+    >
+      No request sent yet...
+    </div>
+
+    <!-- REQUEST VIEWER -->
+    <div v-if="selectedTab === 'Request' && requestPreview" class="p-2">
       <!-- METHOD, PATH, STATUS VIEWER -->
       <div class="flex items-center gap-2 font-bold">
-        <span class="font-extrabold" :class="[coloredHttpMethod(method)]">
+        <div class="font-extrabold" :class="[coloredHttpMethod(method)]">
           {{ requestPreview?.method }}
-        </span>
-        <span class="text-ternary">{{ url }}</span>
-        <span class="text-primary">
-          {{ path }}
-        </span>
+        </div>
+        <div class="overflow-hidden break-words text-primary">
+          {{ requestPreview?.url }}
+        </div>
+        <div class="text-ternary opacity-80">HTTP/1.1</div>
       </div>
 
       <!-- HEADERS VIEWER -->
@@ -170,14 +144,37 @@ const path = computed(() => {
 
     <!-- RESPONSE VIEWER -->
     <div v-else="selectedTab === 'Response'" class="h-full w-full p-2">
-      <iframe
-        v-if="responsePreview"
-        class="h-full w-full"
-        sandbox="allow-scripts"
-        :srcdoc="
-          `<base href='${requestPreview!.url}' />` + responsePreview.body
-        "
-      />
+      <!-- Loading Spinner -->
+      <div
+        v-if="requestLoading"
+        class="flex h-full w-full items-center justify-center"
+      >
+        <svg
+          class="size-10 animate-spin text-primary"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
+        </svg>
+      </div>
+      <!-- <iframe
+        v-else-if="responsePreview"
+        class="h-full w-full p-2"
+        :srcdoc="responsePreview.body"
+      /> -->
       <BodyViewer v-if="responsePreview" />
     </div>
   </div>

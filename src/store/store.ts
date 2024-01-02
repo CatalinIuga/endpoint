@@ -1,5 +1,6 @@
 import { FetchOptions, HttpVerb, fetch } from "@tauri-apps/api/http";
 import { defineStore } from "pinia";
+import * as prittier from "prettier";
 import { ref } from "vue";
 import {
   type Auth,
@@ -29,18 +30,21 @@ export const useStore = defineStore("crld", () => {
     auth: Auth;
     body: Body;
   } | null>(null);
+
   const responsePreview = ref<{
     status: number;
     statusText: string;
     headers: Record<string, string>;
     body: string;
   } | null>(null);
+
   const requestLoading = ref(false);
   const requestError = ref("");
 
   // #YOLO
   const sendRequest = async () => {
-    resetPreview();
+    preparePreview();
+    requestLoading.value = true;
 
     requestPreview.value = {
       url: url.value,
@@ -52,30 +56,37 @@ export const useStore = defineStore("crld", () => {
     };
 
     const options: FetchOptions = {
-      responseType: 2,
+      responseType: 2, // Text
       method: method.value,
       timeout: 10000,
     };
 
-    await fetch(url.value, options)
-      .then((res) => {
-        responsePreview.value = {
-          status: res.status,
-          statusText: statusText(res.status),
-          headers: res.headers,
-          body: res.data as string, // TODO - this is wack af
-        };
-      })
-      .catch((err) => {
-        requestError.value = err;
-        console.error(err);
+    try {
+      // Simulate a delay of 10 seconds
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      const response = await fetch(url.value, options);
+
+      // Not sure about this one yet, but hey it works!
+      const formated = await prittier.format(response.data as string, {
+        parser: "babel",
       });
 
-    requestLoading.value = false;
+      responsePreview.value = {
+        status: response.status,
+        statusText: statusText(response.status),
+        headers: response.headers,
+        body: formated,
+      };
+    } catch (err: any) {
+      requestError.value = err.message;
+    } finally {
+      requestLoading.value = false;
+    }
   };
 
   // HELPERS
-  const resetPreview = () => {
+  const preparePreview = () => {
     requestLoading.value = false;
     requestError.value = "";
     requestPreview.value = null;
@@ -87,7 +98,6 @@ export const useStore = defineStore("crld", () => {
     requestError,
     requestLoading,
     responsePreview,
-    resetPreview,
     url,
     method,
     parameters,
@@ -95,5 +105,6 @@ export const useStore = defineStore("crld", () => {
     auth,
     body,
     sendRequest,
+    preparePreview,
   };
 });
