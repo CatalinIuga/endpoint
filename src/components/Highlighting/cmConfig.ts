@@ -29,7 +29,7 @@ import {
   lineNumbers,
   rectangularSelection,
 } from "@codemirror/view";
-import { theme } from "./theme";
+import { editorTheme, readonlyTheme } from "./cmTheme";
 
 // This is a custom fold setup that uses a custom DOM element as the marker
 const customFoldSetup = foldGutter({
@@ -37,6 +37,8 @@ const customFoldSetup = foldGutter({
     const arrow = document.createElement("span");
     arrow.className = "cm-foldmarker";
     arrow.textContent = open ? "▼" : "▶";
+    // smaller fonsize on open since this look unbalanced
+    arrow.style.fontSize = open ? "16px" : "12px";
     return arrow;
   },
 });
@@ -72,12 +74,13 @@ const customBasicSetup: Extension = (() => [
 export const baseExtensions = [
   customBasicSetup,
   customFoldSetup,
-  theme,
+  editorTheme,
   EditorView.lineWrapping,
 ];
 
 export const readonlyBasicSetup: Extension = (() => [
   highlightSpecialChars(),
+  highlightActiveLineGutter(),
   drawSelection(),
   dropCursor(),
   EditorState.allowMultipleSelections.of(true),
@@ -91,6 +94,7 @@ export const readonlyBasicSetup: Extension = (() => [
 
 export const readonlyExtensions = [
   readonlyBasicSetup,
-  theme,
+  customFoldSetup,
+  readonlyTheme,
   EditorView.lineWrapping,
 ];

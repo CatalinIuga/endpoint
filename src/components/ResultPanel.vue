@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useStore } from "../store/store";
 import { coloredHttpMethod, coloredHttpStatus } from "../utils/coloring";
-import BodyViewer from "./Highlighting/BodyViewer.vue";
+import ReadonlyViewer from "./Highlighting/ReadonlyViewer.vue";
 
 const selectedTab = ref("Request");
 
@@ -11,6 +11,8 @@ const store = useStore();
 
 const { responsePreview, requestPreview, requestLoading, requestError } =
   storeToRefs(store);
+
+const previewHtml = ref(false);
 
 const path = () => {
   if (requestPreview.value) {
@@ -29,7 +31,7 @@ const path = () => {
 <template>
   <!-- Tabs -->
   <div
-    class="flex w-full justify-between border-b-[1px] border-primary border-opacity-5 px-2 py-2"
+    class="-ml-2 flex w-[calc(100%+8px)] justify-between border-b-[1px] border-primary border-opacity-5 px-2 py-2"
   >
     <div class="flex gap-[2px] text-xs text-ternary">
       <button
@@ -94,10 +96,11 @@ const path = () => {
       </button>
     </div>
     <button
-      @click="store.preparePreview"
-      class="rounded-md pb-2 hover:bg-hovered"
+      v-if="requestPreview"
+      @click="store.clearPreview"
+      class="rounded-md px-2 text-xs hover:bg-hovered"
     >
-      ...
+      clear
     </button>
   </div>
 
@@ -119,16 +122,16 @@ const path = () => {
     </div>
   </div>
 
-  <!-- Request&Response Viewers -->
-  <div class="h-full w-full overflow-y-auto">
-    <!-- PLACEHOLDER -->
-    <div
-      v-if="!requestLoading && !requestPreview"
-      class="flex h-full w-full items-center justify-center"
-    >
-      No request sent yet...
-    </div>
+  <!-- PLACEHOLDER -->
+  <div
+    v-if="!requestLoading && !requestPreview"
+    class="flex h-full w-full items-center justify-center"
+  >
+    No request sent yet...
+  </div>
 
+  <!-- Request&Response Viewers -->
+  <div v-else class="h-full w-full overflow-y-auto">
     <!-- REQUEST VIEWER -->
     <div v-if="selectedTab === 'Request' && requestPreview" class="p-2">
       <!-- METHOD, PATH, STATUS VIEWER -->
@@ -186,23 +189,26 @@ const path = () => {
         </svg>
       </div>
       <iframe
-        v-else-if="responsePreview"
-        class="h-full w-full p-2"
+        v-if="responsePreview && previewHtml"
+        class="h-full w-full"
         sandbox="allow-scripts"
         :srcdoc="`<base href='${requestPreview?.url}'>` + responsePreview.body"
       />
-      <BodyViewer v-if="responsePreview" />
+      <ReadonlyViewer v-else-if="responsePreview" />
     </div>
   </div>
 
   <!-- Menu -->
-  <div
-    class="flex w-full justify-between border-t-[1px] border-primary border-opacity-5 px-2 py-2"
-  >
-    <div class="flex gap-[2px] text-xs text-ternary">
-      <!-- Response type menu -->
-      <!-- Preview toggle for HTML -->
-    </div>
-    <button class="rounded-md pb-2 hover:bg-hovered">...</button>
+  <div class="flex items-center gap-3 p-2 text-xs">
+    <!-- Response type menu -->
+    <!-- Preview toggle for HTML -->
+    <button
+      class="relative flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-hovered"
+      :class="[previewHtml ? 'bg-selected text-primary hover:bg-selected' : '']"
+      @click="previewHtml = !previewHtml"
+    >
+      preview
+    </button>
+    <button class="rounded-md pb-2 text-base hover:bg-hovered">...</button>
   </div>
 </template>

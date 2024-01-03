@@ -8,7 +8,7 @@ import { storeToRefs } from "pinia";
 import { ShallowRef, shallowRef, watch, watchEffect } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { useStore } from "../../store/store";
-import { baseExtensions } from "./config";
+import { baseExtensions } from "./cmConfig";
 
 const store = useStore();
 const { body } = storeToRefs(store);

@@ -1,4 +1,9 @@
-import { FetchOptions, HttpVerb, fetch } from "@tauri-apps/api/http";
+import {
+  FetchOptions,
+  HttpVerb,
+  ResponseType,
+  fetch,
+} from "@tauri-apps/api/http";
 // @ts-expect-error -> Deno clears this!
 import prettierPluginHtml from "https://unpkg.com/prettier@3.1.1/plugins/html.mjs";
 import { defineStore } from "pinia";
@@ -24,8 +29,6 @@ export const useStore = defineStore("crld", () => {
 
   // RESPONSE STATES
   // -> this gets sent back to the UI for display
-
-  // actually this should not be a ref since it's not reactive
   const requestPreview = shallowRef<{
     url: string;
     method: HttpVerb;
@@ -47,9 +50,11 @@ export const useStore = defineStore("crld", () => {
 
   // #YOLO
   const sendRequest = async () => {
-    preparePreview();
+    clearPreview();
     requestLoading.value = true;
 
+    // TODO: filter out the parameters, headers, auth and body
+    // -> that are not selected by the user
     requestPreview.value = {
       url: url.value,
       method: method.value,
@@ -58,10 +63,9 @@ export const useStore = defineStore("crld", () => {
       auth: toRaw(auth.value),
       body: toRaw(body.value),
     };
-    console.log(requestPreview.value);
 
     const options: FetchOptions = {
-      responseType: 2, // Text
+      responseType: ResponseType.Text,
       method: method.value,
       timeout: 6000,
     };
@@ -74,15 +78,18 @@ export const useStore = defineStore("crld", () => {
 
       const data = response.data as string;
 
-      // at this point i think i will just use the basic format if this fails...
-      // TODO compare no fromat vs my basic format function
       const formated = await prettier
         .format(response.data as string, {
           parser: "html",
           htmlWhitespaceSensitivity: "ignore",
           plugins: [prettierPluginHtml],
         })
-        .catch(() => data);
+        // prittier formater is great but can fail for basic syntax errors...
+        // -> so if it fails we just return the data as is
+        .catch((err) => {
+          console.error("Prettier failed to format the response: ", err);
+          return data;
+        });
 
       responsePreview.value = {
         status: response.status,
@@ -98,7 +105,7 @@ export const useStore = defineStore("crld", () => {
   };
 
   // HELPERS
-  const preparePreview = () => {
+  const clearPreview = () => {
     requestLoading.value = false;
     requestError.value = "";
     requestPreview.value = null;
@@ -117,6 +124,6 @@ export const useStore = defineStore("crld", () => {
     auth,
     body,
     sendRequest,
-    preparePreview,
+    clearPreview,
   };
 });

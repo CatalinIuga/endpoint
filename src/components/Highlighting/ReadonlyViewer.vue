@@ -2,10 +2,10 @@
 import { Compartment } from "@codemirror/state";
 import { EditorView } from "codemirror";
 import { storeToRefs } from "pinia";
-import { shallowRef } from "vue";
+import { computed, shallowRef } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { useStore } from "../../store/store";
-import { readonlyExtensions } from "./config";
+import { readonlyExtensions } from "./cmConfig";
 
 const store = useStore();
 const { responsePreview } = storeToRefs(store);
@@ -20,16 +20,20 @@ const handleReady = (payload: any) => {
     effects: [baseCompartment.reconfigure(readonlyExtensions)],
   });
 };
+
+const body = computed(() => {
+  if (responsePreview.value) {
+    return responsePreview.value.body;
+  }
+  return "";
+});
 </script>
 
 <template>
-  <!-- TODO ADD NEW STYLES FOR THIS 🫠 -->
   <Codemirror
     disabled
-    v-model.value="responsePreview!.body"
+    v-model.value="body"
     style="height: 100%; width: 100%; padding: 4px 4px"
-    :autofocus="true"
-    :tab-size="2"
     @ready="handleReady"
     :extensions="[extensions]"
     placeholder="<No body>"

@@ -12,22 +12,18 @@ const red = "#f87171",
   purple = "#a78bfa",
   pink = "#f472b6";
 
-const bracketMatchBg = "rgba(0, 0, 0, 0.04)",
-  ternary = "rgba(245, 245, 240, 0.2)",
+const ternary = "rgba(245, 245, 240, 0.2)",
   selection = "rgba(119, 219, 143, 0.3)",
   bg2 = "#231f1f",
   bg3 = "#282525",
   bg4 = "#333131",
-  bg5 = "#2E2B2B",
-  bg6 = "#373737",
   primary = "#f5f5f0",
-  secondary = "#1C1818",
   selected = "rgba(245, 245, 240, 0.08)",
-  disabled = "rgba(245, 245, 240, 0.06)",
   invalid = red,
   background = bg2,
   cursor = primary;
 
+// theme for the normal editor, has some rounded corners on the active line
 export const customTheme = EditorView.theme(
   {
     "&": {
@@ -120,7 +116,64 @@ export const customTheme = EditorView.theme(
   },
   { dark: true },
 );
+// theme for the readonly editor, no rounded corners on the active line
+export const customThemeReadonly = EditorView.theme(
+  {
+    "&": {
+      color: primary,
+      backgroundColor: background,
+      fontSize: "16px",
+    },
 
+    ".cm-content": {
+      caretColor: cursor,
+    },
+
+    ".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor },
+    "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection":
+      { backgroundColor: selection },
+
+    // no clue what these are
+    ".cm-panels": { backgroundColor: bg2, color: primary },
+    ".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
+    ".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
+
+    ".cm-activeLine": {
+      backgroundColor: selected,
+      borderRadius: "0 6px  6px 0",
+    },
+    ".cm-activeLine::selection, .cm-activeLine > span::selection, .cm-activeLine > span > span::selection":
+      { backgroundColor: red },
+    // huh?
+    ".cm-selectionMatch": { backgroundColor: "#aafe661a" },
+
+    "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
+      backgroundColor: selection,
+      color: orange,
+    },
+    ".cm-gutters": {
+      backgroundColor: "transparent",
+      color: primary,
+      border: "none",
+    },
+    ".cm-foldGutter .cm-gutterElement": {
+      paddingLeft: "10px",
+      borderRadius: "6px 0 0 6px",
+    },
+    ".cm-activeLineGutter": {
+      backgroundColor: bg4,
+      color: primary,
+    },
+    ".cm-foldPlaceholder": {
+      backgroundColor: "transparent",
+      border: "none",
+      color: primary,
+    },
+  },
+  { dark: true },
+);
+
+// this styling is for both the normal and readonly editor
 export const customThemeStyle = HighlightStyle.define([
   { tag: t.keyword, color: purple },
   {
@@ -166,7 +219,12 @@ export const customThemeStyle = HighlightStyle.define([
   { tag: t.invalid, color: invalid },
 ]);
 
-export const theme: Extension = [
+export const editorTheme: Extension = [
   customTheme,
+  syntaxHighlighting(customThemeStyle),
+];
+
+export const readonlyTheme: Extension = [
+  customThemeReadonly,
   syntaxHighlighting(customThemeStyle),
 ];
