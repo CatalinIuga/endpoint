@@ -25,7 +25,7 @@ const openSubtype = ref(false);
 </script>
 
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between w-full">
     <div class="flex items-center gap-3">
       <button
         class="relative z-10 flex w-fit items-center justify-between gap-2 rounded-lg fill-current px-2 py-1 text-sm shadow-md hover:bg-bg4"
@@ -34,7 +34,7 @@ const openSubtype = ref(false);
       >
         <svg
           v-if="body.type === 'None'"
-          class="z-10 w-[22px]"
+          class="z-10 w-[20px]"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
           transform="matrix(1, 0, 0, 1, 0, 0)"
@@ -386,22 +386,23 @@ const openSubtype = ref(false);
         v-if="body.type === 'Form'"
       >
         <span
-          class="left-0 inline-block h-6 w-10 rounded-full shadow-sm transition-transform"
+          class="left-0 inline-block h-5 w-9 rounded-3xl shadow-sm transition-transform"
           :class="[body.multipart ? 'bg-green-400' : 'bg-bg4']"
         ></span>
         <span
           class="absolute left-3 inline-block h-4 w-4 transform rounded-full shadow-sm transition-transform"
           :class="{
-            'translate-x-4': body.multipart,
+            'translate-x-3': body.multipart,
             'bg-bg': body.multipart,
             'bg-primary': !body.multipart,
           }"
         ></span>
-        <span class="text-sm text-ternary">Multipart</span>
+        <span class="text-sm text-primary">Multipart</span>
       </button>
     </div>
 
     <!-- FORMAT BUTTON! -->
+    <!-- TODO add the prittier formater to this aswell... -->
     <button
       class="flex items-center justify-center rounded-lg bg-bg3 fill-current px-2 py-1 text-sm shadow-md hover:bg-bg4"
       v-if="body.type === 'Text' && body.subtype === 'JSON'"

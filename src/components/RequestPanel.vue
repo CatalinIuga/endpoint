@@ -50,7 +50,10 @@ const selectedTab = ref("Params");
   </div>
 
   <!-- Tab submenus -->
-  <div class="p-4">
+  <div
+    v-if="['Auth', 'Body'].includes(selectedTab)"
+    class="h-15 flex border-t-[1px] border-primary border-opacity-5 p-3"
+  >
     <AuthMenu v-if="selectedTab === 'Auth'" />
     <BodyMenu v-else-if="selectedTab === 'Body'" />
   </div>

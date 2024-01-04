@@ -33,7 +33,7 @@ const body = computed(() => {
   <Codemirror
     disabled
     v-model.value="body"
-    style="height: 100%; width: 100%; padding: 4px 4px"
+    style="height: 100%; width: 100%"
     @ready="handleReady"
     :extensions="[extensions]"
     placeholder="<No body>"

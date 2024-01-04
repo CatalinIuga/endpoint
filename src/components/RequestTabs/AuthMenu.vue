@@ -18,7 +18,7 @@ const open = ref(false);
   >
     <svg
       v-if="auth.type === 'None'"
-      class="w-[22px] z-10"
+      class="w-[20px] z-10"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       transform="matrix(1, 0, 0, 1, 0, 0)"

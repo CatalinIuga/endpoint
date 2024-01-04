@@ -161,7 +161,7 @@ const path = () => {
     </div>
 
     <!-- RESPONSE VIEWER -->
-    <div v-else="selectedTab === 'Response'" class="h-full w-full p-2">
+    <div v-else="selectedTab === 'Response'" class="h-full w-full py-2 pr-2">
       <!-- Loading Spinner -->
       <div
         v-if="requestLoading"
@@ -190,8 +190,8 @@ const path = () => {
       </div>
       <iframe
         v-if="responsePreview && previewHtml"
-        class="h-full w-full"
-        sandbox="allow-scripts"
+        class="h-full w-full rounded-md"
+        sandbox="allow-scripts allow-same-origin"
         :srcdoc="`<base href='${requestPreview?.url}'>` + responsePreview.body"
       />
       <ReadonlyViewer v-else-if="responsePreview" />
@@ -199,16 +199,29 @@ const path = () => {
   </div>
 
   <!-- Menu -->
-  <div class="flex items-center gap-3 p-2 text-xs">
-    <!-- Response type menu -->
+  <div
+    class="h-15 -ml-2 flex w-[calc(100%+8px)] items-center justify-between gap-3 border-t-[1px] border-primary border-opacity-5 p-3 text-xs"
+  >
     <!-- Preview toggle for HTML -->
     <button
-      class="relative flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-hovered"
-      :class="[previewHtml ? 'bg-selected text-primary hover:bg-selected' : '']"
       @click="previewHtml = !previewHtml"
+      class="relative flex items-center justify-between gap-2 rounded-xl fill-current px-2 py-1 text-sm"
     >
-      preview
+      <span
+        class="left-0 inline-block h-5 w-9 rounded-3xl shadow-sm transition-transform"
+        :class="[previewHtml ? 'bg-green-400' : 'bg-bg4']"
+      ></span>
+      <span
+        class="absolute left-3 inline-block h-4 w-4 transform rounded-full shadow-sm transition-transform"
+        :class="{
+          'translate-x-3': previewHtml,
+          'bg-bg': previewHtml,
+          'bg-primary': !previewHtml,
+        }"
+      ></span>
+      <span class="text-sm text-primary">Preview</span>
     </button>
-    <button class="rounded-md pb-2 text-base hover:bg-hovered">...</button>
+    <!-- Submenu or something... -->
+    <button class="rounded-md text-sm hover:bg-hovered">...</button>
   </div>
 </template>
