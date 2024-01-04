@@ -72,7 +72,7 @@ export const useStore = defineStore("crld", () => {
 
     try {
       // Simulate a delay of 10 seconds
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const response = await fetch(url.value, options);
 

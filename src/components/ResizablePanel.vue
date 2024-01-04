@@ -54,6 +54,7 @@ const dragSlider = (e: MouseEvent) => {
 
 <template>
   <section class="flex h-full w-full overflow-hidden rounded-t-2xl bg-bg2">
+    <!-- REQUEST PANEL WRAPPER -->
     <article
       ref="requestPanel"
       class="flex min-w-[25%] flex-col overflow-auto"
@@ -70,6 +71,7 @@ const dragSlider = (e: MouseEvent) => {
       <div id="middle" class="h-full w-[1px] bg-current"></div>
     </div>
 
+    <!-- RESULT PANEL WRAPPER -->
     <article ref="resultPanel" class="flex min-w-[25%] flex-1 flex-col">
       <ResultPanel />
     </article>

@@ -3,16 +3,19 @@ import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useStore } from "../store/store";
 import { coloredHttpMethod, coloredHttpStatus } from "../utils/coloring";
+
+import XIcon from "../assets/svg/x.svg";
 import ReadonlyViewer from "./Highlighting/ReadonlyViewer.vue";
 
+// ICONS
+import LoadingIcon from "../assets/svg/loading.svg";
+
 const selectedTab = ref("Request");
+const previewHtml = ref(false);
 
 const store = useStore();
-
 const { responsePreview, requestPreview, requestLoading, requestError } =
   storeToRefs(store);
-
-const previewHtml = ref(false);
 
 const path = () => {
   if (requestPreview.value) {
@@ -29,11 +32,12 @@ const path = () => {
 </script>
 
 <template>
-  <!-- Tabs -->
+  <!-- TABS -->
   <div
     class="-ml-2 flex w-[calc(100%+8px)] justify-between border-b-[1px] border-primary border-opacity-5 px-2 py-2"
   >
     <div class="flex gap-[2px] text-xs text-ternary">
+      <!-- REQUEST -->
       <button
         class="relative flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-hovered"
         :class="[
@@ -44,6 +48,8 @@ const path = () => {
         @click="selectedTab = 'Request'"
       >
         Request
+
+        <!-- REQUEST METHOD -->
         <span
           v-if="requestPreview"
           class="font-bold"
@@ -53,6 +59,7 @@ const path = () => {
         </span>
       </button>
 
+      <!-- RESULT -->
       <button
         class="relative flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-hovered"
         :class="[
@@ -63,29 +70,13 @@ const path = () => {
         @click="selectedTab = 'Response'"
       >
         Request
+
+        <!-- RESPONSE LOADING -->
         <span v-if="requestLoading" class="font-bold text-primary">
-          <svg
-            class="size-2 animate-spin text-primary"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            />
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-          </svg>
+          <div v-html="LoadingIcon" class="size-2 animate-spin text-primary" />
         </span>
 
+        <!-- RESPONSE STATUS CODE -->
         <span
           v-if="responsePreview"
           class="font-extrabold"
@@ -95,6 +86,8 @@ const path = () => {
         </span>
       </button>
     </div>
+
+    <!-- CLEAR BUTTON -->
     <button
       v-if="requestPreview"
       @click="store.clearPreview"
@@ -106,19 +99,9 @@ const path = () => {
 
   <!-- Error Message -->
   <div v-if="requestError" class="flex h-full w-full items-center">
-    <div class="flex flex-col items-center justify-center">
-      <svg
-        class="size-10 text-red-500"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          fill="currentColor"
-          d="M12 14.828l4.243 4.243 1.414-1.414L13.414 13l4.243-4.243-1.414-1.414L12 11.172 7.757 6.929 6.343 8.343 10.586 12l-4.243 4.243 1.414 1.414L12 14.828z"
-        />
-      </svg>
-      <p class="text-sm text-red-500">{{ requestError }}</p>
+    <div class="flex flex-col items-center justify-center text-red-500">
+      <div class="size-10" v-html="XIcon" />
+      <p class="text-sm">{{ requestError }}</p>
     </div>
   </div>
 
@@ -167,26 +150,7 @@ const path = () => {
         v-if="requestLoading"
         class="flex h-full w-full items-center justify-center"
       >
-        <svg
-          class="size-10 animate-spin text-primary"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          />
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-          />
-        </svg>
+        <div v-html="LoadingIcon" class="size-10 animate-spin text-primary" />
       </div>
       <iframe
         v-if="responsePreview && previewHtml"
