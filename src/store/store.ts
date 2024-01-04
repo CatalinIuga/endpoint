@@ -55,15 +55,13 @@ export const useStore = defineStore("crld", () => {
 
     // TODO: filter out the parameters, headers, auth and body
     // -> that are not selected by the user
-    // TODO: fix again for when the component is not mounted
-    // and the user modified the request
     requestPreview.value = {
       url: url.value,
       method: method.value,
-      parameters: toRaw(parameters.value),
-      headers: toRaw(headers.value),
-      auth: toRaw(auth.value),
-      body: toRaw(body.value),
+      parameters: structuredClone(toRaw(parameters.value)),
+      headers: structuredClone(toRaw(headers.value)),
+      auth: structuredClone(toRaw(auth.value)),
+      body: structuredClone(toRaw(body.value)),
     };
 
     const options: FetchOptions = {
