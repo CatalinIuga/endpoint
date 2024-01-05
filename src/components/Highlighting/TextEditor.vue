@@ -14,17 +14,20 @@ const store = useStore();
 const { body } = storeToRefs(store);
 
 const baseCompartment = new Compartment();
-
 const extensions = baseCompartment.of(baseExtensions);
+
 // Initialize the editor view
 const view = shallowRef<EditorView>();
 const handleReady = (payload: any) => {
   view.value = payload.view;
 };
 
+// Reconfigure the editor extensions based on the body content type
 const refreshExtensions = (view: ShallowRef<EditorView | undefined>) => {
   if (!view.value) return;
+
   if (body.value.type !== "Text") return;
+  
   switch (body.value.subtype) {
     case "JSON":
       view.value.dispatch({
@@ -50,6 +53,7 @@ const refreshExtensions = (view: ShallowRef<EditorView | undefined>) => {
   }
 };
 
+// TODO: fuck if i know why i have this one?
 watchEffect(() => {
   if (!view.value) return;
   refreshExtensions(view);

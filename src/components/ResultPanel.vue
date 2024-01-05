@@ -152,12 +152,16 @@ const path = () => {
       >
         <div v-html="LoadingIcon" class="size-10 animate-spin text-primary" />
       </div>
+
+      <!-- HTML PREVIEW -->
       <iframe
         v-if="responsePreview && previewHtml"
         class="h-full w-full rounded-md"
         sandbox="allow-scripts allow-same-origin"
         :srcdoc="`<base href='${requestPreview?.url}'>` + responsePreview.body"
       />
+
+      <!-- TEXT RESULT PREVIEW (any type) -->
       <ReadonlyViewer v-else-if="responsePreview" />
     </div>
   </div>
