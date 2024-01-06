@@ -4,8 +4,12 @@ import { ref } from "vue";
 import { useStore } from "../../store/store";
 
 // ICONS
+import ClosedEyeIcon from "../../assets/svg/eye-closed.svg";
+import OpenEyeIcon from "../../assets/svg/eye-open.svg";
 import NoneIcon from "../../assets/svg/none.svg";
 import PasswordIcon from "../../assets/svg/password.svg";
+import TagIcon from "../../assets/svg/tag.svg";
+import TokenIcon from "../../assets/svg/token.svg";
 import UserIcon from "../../assets/svg/user.svg";
 
 const store = useStore();
@@ -31,7 +35,6 @@ const showApiKey = ref(false);
   <div
     v-else-if="auth.type === 'Basic auth'"
     class="flex h-full flex-col p-4 text-ternary"
-    px-4
   >
     <!-- Username input -->
     <div class="border-b-[1px] border-primary border-opacity-5 p-1">
@@ -50,7 +53,7 @@ const showApiKey = ref(false);
     </div>
 
     <!-- Password input -->
-    <div class="border-b-[1px] border-primary border-opacity-5 p-1">
+    <div class="border-b-[1px] border-primary border-opacity-5 px-2 py-1">
       <div
         class="flex items-center gap-2 rounded-sm fill-current px-2 py-1 outline-offset-2 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500"
       >
@@ -61,67 +64,20 @@ const showApiKey = ref(false);
           v-model="auth.password"
           placeholder="password"
         />
-        <svg
+        <!-- SHOW PASSWORD ICON -->
+        <div
           v-if="showPassword"
+          v-html="OpenEyeIcon"
           class="w-4 cursor-pointer stroke-current"
           @click="showPassword = !showPassword"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <path
-              d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <circle
-              cx="12"
-              cy="12"
-              r="3"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></circle>
-          </g>
-        </svg>
-        <svg
+        />
+        <!-- UNSHOW PASSWORD -->
+        <div
           v-else
+          v-html="ClosedEyeIcon"
           class="w-4 cursor-pointer"
           @click="showPassword = !showPassword"
-          viewBox="0 0 28 28"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              clip-rule="evenodd"
-              d="M22.6928 1.55018C22.3102 1.32626 21.8209 1.45915 21.6 1.84698L19.1533 6.14375C17.4864 5.36351 15.7609 4.96457 14.0142 4.96457C9.32104 4.96457 4.781 7.84644 1.11993 13.2641L1.10541 13.2854L1.09271 13.3038C0.970762 13.4784 0.967649 13.6837 1.0921 13.8563C3.79364 17.8691 6.97705 20.4972 10.3484 21.6018L8.39935 25.0222C8.1784 25.4101 8.30951 25.906 8.69214 26.1299L9.03857 26.3326C9.4212 26.5565 9.91046 26.4237 10.1314 26.0358L23.332 2.86058C23.553 2.47275 23.4219 1.97684 23.0392 1.75291L22.6928 1.55018ZM18.092 8.00705C16.7353 7.40974 15.3654 7.1186 14.0142 7.1186C10.6042 7.1186 7.07416 8.97311 3.93908 12.9239C3.63812 13.3032 3.63812 13.8561 3.93908 14.2354C6.28912 17.197 8.86102 18.9811 11.438 19.689L12.7855 17.3232C11.2462 16.8322 9.97333 15.4627 9.97333 13.5818C9.97333 11.2026 11.7969 9.27368 14.046 9.27368C15.0842 9.27368 16.0317 9.68468 16.7511 10.3612L18.092 8.00705ZM15.639 12.3137C15.2926 11.7767 14.7231 11.4277 14.046 11.4277C12.9205 11.4277 12 12.3906 12 13.5802C12 14.3664 12.8432 15.2851 13.9024 15.3624L15.639 12.3137Z"
-              fill-rule="evenodd"
-            ></path>
-            <path
-              d="M14.6873 22.1761C19.1311 21.9148 23.4056 19.0687 26.8864 13.931C26.9593 13.8234 27 13.7121 27 13.5797C27 13.4535 26.965 13.3481 26.8956 13.2455C25.5579 11.2677 24.1025 9.62885 22.5652 8.34557L21.506 10.2052C22.3887 10.9653 23.2531 11.87 24.0894 12.9239C24.3904 13.3032 24.3904 13.8561 24.0894 14.2354C21.5676 17.4135 18.7903 19.2357 16.0254 19.827L14.6873 22.1761Z"
-            ></path>
-          </g>
-        </svg>
+        />
       </div>
     </div>
   </div>
@@ -130,97 +86,33 @@ const showApiKey = ref(false);
   <div
     v-else-if="auth.type === 'Bearer token'"
     class="flex h-full flex-col p-4 text-ternary"
-    px-4
   >
     <div class="border-b-[1px] border-primary border-opacity-5 p-1">
       <div
         class="flex items-center gap-2 rounded-sm fill-current px-2 py-1 outline-offset-2 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500"
       >
-        <svg class="w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M9.59309 9.5L21 9.5V12.5L18 12.5V17H15.5V12.5H9.59309C9.59309 12.5 8.5 15 6 15C3.5 15 2 13.2091 2 11C2 8.79086 3.5 7 6 7C8.5 7 9.59309 9.5 9.59309 9.5ZM3 11C3 12.6569 4.34315 14 6 14C7.65685 14 9 12.6569 9 11C9 9.34315 7.65685 8 6 8C4.34315 8 3 9.34315 3 11Z"
-            ></path>
-            <path
-              d="M21 9.5L21 8.5C21.5523 8.5 22 8.94772 22 9.5H21ZM9.59309 9.5L9.59309 10.5C9.19571 10.5 8.83604 10.2647 8.67684 9.90061L9.59309 9.5ZM21 12.5H22C22 12.7652 21.8946 13.0196 21.7071 13.2071C21.5196 13.3946 21.2652 13.5 21 13.5L21 12.5ZM18 12.5H17C17 12.2348 17.1054 11.9804 17.2929 11.7929C17.4804 11.6054 17.7348 11.5 18 11.5L18 12.5ZM18 17H19C19 17.5523 18.5523 18 18 18V17ZM15.5 17V18C14.9477 18 14.5 17.5523 14.5 17H15.5ZM15.5 12.5V11.5C16.0523 11.5 16.5 11.9477 16.5 12.5H15.5ZM9.59309 12.5L8.67684 12.0994C8.83604 11.7353 9.19571 11.5 9.59309 11.5V12.5ZM6 15L6 14L6 14L6 15ZM6 14L6 13L6 13L6 14ZM3 11L2 11L3 11ZM21 10.5L9.59309 10.5L9.59309 8.5L21 8.5L21 10.5ZM20 12.5V9.5H22V12.5H20ZM18 11.5L21 11.5L21 13.5L18 13.5L18 11.5ZM17 17V12.5H19V17H17ZM15.5 16H18V18H15.5V16ZM16.5 12.5V17H14.5V12.5H16.5ZM9.59309 11.5H15.5V13.5H9.59309V11.5ZM6 14C6.88301 14 7.53529 13.5667 8.00441 13.0662C8.23837 12.8165 8.41239 12.5638 8.52721 12.3737C8.58406 12.2795 8.62485 12.2033 8.64992 12.154C8.66241 12.1295 8.67088 12.1118 8.67537 12.1023C8.67762 12.0975 8.67886 12.0948 8.6791 12.0943C8.67923 12.094 8.6791 12.0943 8.67872 12.0951C8.67853 12.0955 8.67828 12.0961 8.67797 12.0968C8.67781 12.0972 8.67764 12.0976 8.67745 12.098C8.67736 12.0982 8.6772 12.0986 8.67716 12.0987C8.677 12.099 8.67684 12.0994 9.59309 12.5C10.5093 12.9006 10.5092 12.901 10.509 12.9014C10.5089 12.9015 10.5088 12.9019 10.5086 12.9022C10.5084 12.9028 10.5081 12.9034 10.5078 12.9041C10.5072 12.9054 10.5066 12.9069 10.5058 12.9085C10.5044 12.9118 10.5027 12.9156 10.5006 12.9201C10.4966 12.929 10.4914 12.9403 10.485 12.9539C10.4723 12.9809 10.4548 13.017 10.4326 13.0608C10.3881 13.1482 10.3239 13.2673 10.2392 13.4076C10.071 13.6862 9.81549 14.0585 9.46368 14.4338C8.76125 15.1833 7.61699 16 6 16L6 14ZM3 11C3 11.8786 3.29646 12.6227 3.78758 13.1398C4.27116 13.6489 5.00139 14 6 14V16C4.49861 16 3.22884 15.4557 2.33742 14.5171C1.45354 13.5865 1 12.3305 1 11H3ZM6 8C5.00139 8 4.27116 8.35108 3.78758 8.86023C3.29646 9.37733 3 10.1214 3 11H1C1 9.66951 1.45354 8.41353 2.33742 7.48291C3.22884 6.54435 4.49861 6 6 6V8ZM9.59309 9.5C8.67684 9.90061 8.677 9.90098 8.67716 9.90134C8.6772 9.90145 8.67736 9.90179 8.67745 9.90201C8.67764 9.90243 8.67781 9.90283 8.67797 9.90318C8.67828 9.90389 8.67853 9.90446 8.67872 9.90488C8.6791 9.90573 8.67923 9.90601 8.6791 9.90574C8.67886 9.9052 8.67762 9.90247 8.67538 9.89771C8.67088 9.88816 8.66241 9.87052 8.64992 9.84596C8.62485 9.79668 8.58406 9.72046 8.52721 9.62632C8.41239 9.43618 8.23837 9.18347 8.00441 8.93384C7.53529 8.43331 6.88301 8 6 8V6C7.61699 6 8.76125 6.81669 9.46368 7.56616C9.81549 7.94153 10.071 8.31382 10.2392 8.59243C10.3239 8.73266 10.3881 8.85176 10.4326 8.9392C10.4548 8.98299 10.4723 9.01907 10.485 9.04614C10.4914 9.05968 10.4966 9.071 10.5006 9.07992C10.5027 9.08438 10.5044 9.08824 10.5059 9.0915C10.5066 9.09312 10.5072 9.09459 10.5078 9.09591C10.5081 9.09657 10.5084 9.09718 10.5086 9.09776C10.5088 9.09805 10.5089 9.09846 10.509 9.0986C10.5092 9.099 10.5093 9.09939 9.59309 9.5ZM6 15C3.79086 15 2 13.2091 2 11L4 11C4 12.1046 4.89543 13 6 13V15ZM10 11C10 13.2091 8.20914 15 6 15L6 13C7.10457 13 8 12.1046 8 11H10ZM6 7C8.20914 7 10 8.79086 10 11H8C8 9.89543 7.10457 9 6 9V7ZM2 11C2 8.79086 3.79086 7 6 7V9C4.89543 9 4 9.89543 4 11L2 11Z"
-            ></path>
-          </g>
-        </svg>
+        <!-- TOKEN ICON -->
+        <div class="w-5" v-html="TokenIcon" />
         <input
           :type="showToken ? 'text' : 'password'"
+          class="flex-1 overflow-hidden break-words rounded-sm border-none bg-transparent px-1 text-sm text-primary caret-primary focus:outline-none"
           v-model="auth.token"
-          class="w-full rounded-sm border-none bg-transparent px-1 text-sm text-primary caret-primary focus:outline-none"
           placeholder="token"
         />
-        <svg
+        <!-- SHOW TOKEN ICON -->
+        <div
           v-if="showToken"
+          v-html="OpenEyeIcon"
           class="w-4 cursor-pointer stroke-current"
           @click="showToken = !showToken"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <path
-              d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <circle
-              cx="12"
-              cy="12"
-              r="3"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></circle>
-          </g>
-        </svg>
-        <svg
+        />
+        <!-- UNSHOW TOKEN -->
+        <div
           v-else
+          v-html="ClosedEyeIcon"
           class="w-4 cursor-pointer"
           @click="showToken = !showToken"
-          viewBox="0 0 28 28"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              clip-rule="evenodd"
-              d="M22.6928 1.55018C22.3102 1.32626 21.8209 1.45915 21.6 1.84698L19.1533 6.14375C17.4864 5.36351 15.7609 4.96457 14.0142 4.96457C9.32104 4.96457 4.781 7.84644 1.11993 13.2641L1.10541 13.2854L1.09271 13.3038C0.970762 13.4784 0.967649 13.6837 1.0921 13.8563C3.79364 17.8691 6.97705 20.4972 10.3484 21.6018L8.39935 25.0222C8.1784 25.4101 8.30951 25.906 8.69214 26.1299L9.03857 26.3326C9.4212 26.5565 9.91046 26.4237 10.1314 26.0358L23.332 2.86058C23.553 2.47275 23.4219 1.97684 23.0392 1.75291L22.6928 1.55018ZM18.092 8.00705C16.7353 7.40974 15.3654 7.1186 14.0142 7.1186C10.6042 7.1186 7.07416 8.97311 3.93908 12.9239C3.63812 13.3032 3.63812 13.8561 3.93908 14.2354C6.28912 17.197 8.86102 18.9811 11.438 19.689L12.7855 17.3232C11.2462 16.8322 9.97333 15.4627 9.97333 13.5818C9.97333 11.2026 11.7969 9.27368 14.046 9.27368C15.0842 9.27368 16.0317 9.68468 16.7511 10.3612L18.092 8.00705ZM15.639 12.3137C15.2926 11.7767 14.7231 11.4277 14.046 11.4277C12.9205 11.4277 12 12.3906 12 13.5802C12 14.3664 12.8432 15.2851 13.9024 15.3624L15.639 12.3137Z"
-              fill-rule="evenodd"
-            ></path>
-            <path
-              d="M14.6873 22.1761C19.1311 21.9148 23.4056 19.0687 26.8864 13.931C26.9593 13.8234 27 13.7121 27 13.5797C27 13.4535 26.965 13.3481 26.8956 13.2455C25.5579 11.2677 24.1025 9.62885 22.5652 8.34557L21.506 10.2052C22.3887 10.9653 23.2531 11.87 24.0894 12.9239C24.3904 13.3032 24.3904 13.8561 24.0894 14.2354C21.5676 17.4135 18.7903 19.2357 16.0254 19.827L14.6873 22.1761Z"
-            ></path>
-          </g>
-        </svg>
+        />
       </div>
     </div>
   </div>
@@ -229,58 +121,13 @@ const showApiKey = ref(false);
   <div
     v-else-if="auth.type === 'API key'"
     class="flex h-full flex-col p-4 text-ternary"
-    px-4
   >
     <!-- Header input -->
     <div class="border-b-[1px] border-primary border-opacity-5 p-1">
       <div
         class="flex items-center gap-2 rounded-sm fill-current px-2 py-1 outline-offset-2 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500"
       >
-        <svg
-          class="w-5"
-          version="1.1"
-          id="Layer_1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 512 512"
-          xml:space="preserve"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <polygon
-              points="0,256 0,409.6 385.6,409.6 512,256 385.6,102.4 0,102.4 "
-            ></polygon>
-            <g>
-              <circle class="fill-bg3" cx="350.4" cy="256" r="36.8"></circle>
-              <rect
-                x="86.4"
-                y="182.4"
-                class="fill-bg3"
-                width="171.2"
-                height="16"
-              ></rect>
-              <rect
-                x="86.4"
-                y="244.8"
-                class="fill-bg3"
-                width="171.2"
-                height="16"
-              ></rect>
-              <rect
-                x="166.4"
-                y="307.2"
-                class="fill-bg3"
-                width="91.2"
-                height="16"
-              ></rect>
-            </g>
-          </g>
-        </svg>
+        <div class="w-5" v-html="TagIcon" />
         <input
           type="text"
           class="flex-1 overflow-hidden break-words rounded-sm border-none bg-transparent px-1 text-sm text-primary caret-primary focus:outline-none"
@@ -295,91 +142,27 @@ const showApiKey = ref(false);
       <div
         class="flex items-center gap-2 rounded-sm fill-current px-2 py-1 outline-offset-2 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500"
       >
-        <svg class="w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M9.59309 9.5L21 9.5V12.5L18 12.5V17H15.5V12.5H9.59309C9.59309 12.5 8.5 15 6 15C3.5 15 2 13.2091 2 11C2 8.79086 3.5 7 6 7C8.5 7 9.59309 9.5 9.59309 9.5ZM3 11C3 12.6569 4.34315 14 6 14C7.65685 14 9 12.6569 9 11C9 9.34315 7.65685 8 6 8C4.34315 8 3 9.34315 3 11Z"
-            ></path>
-            <path
-              d="M21 9.5L21 8.5C21.5523 8.5 22 8.94772 22 9.5H21ZM9.59309 9.5L9.59309 10.5C9.19571 10.5 8.83604 10.2647 8.67684 9.90061L9.59309 9.5ZM21 12.5H22C22 12.7652 21.8946 13.0196 21.7071 13.2071C21.5196 13.3946 21.2652 13.5 21 13.5L21 12.5ZM18 12.5H17C17 12.2348 17.1054 11.9804 17.2929 11.7929C17.4804 11.6054 17.7348 11.5 18 11.5L18 12.5ZM18 17H19C19 17.5523 18.5523 18 18 18V17ZM15.5 17V18C14.9477 18 14.5 17.5523 14.5 17H15.5ZM15.5 12.5V11.5C16.0523 11.5 16.5 11.9477 16.5 12.5H15.5ZM9.59309 12.5L8.67684 12.0994C8.83604 11.7353 9.19571 11.5 9.59309 11.5V12.5ZM6 15L6 14L6 14L6 15ZM6 14L6 13L6 13L6 14ZM3 11L2 11L3 11ZM21 10.5L9.59309 10.5L9.59309 8.5L21 8.5L21 10.5ZM20 12.5V9.5H22V12.5H20ZM18 11.5L21 11.5L21 13.5L18 13.5L18 11.5ZM17 17V12.5H19V17H17ZM15.5 16H18V18H15.5V16ZM16.5 12.5V17H14.5V12.5H16.5ZM9.59309 11.5H15.5V13.5H9.59309V11.5ZM6 14C6.88301 14 7.53529 13.5667 8.00441 13.0662C8.23837 12.8165 8.41239 12.5638 8.52721 12.3737C8.58406 12.2795 8.62485 12.2033 8.64992 12.154C8.66241 12.1295 8.67088 12.1118 8.67537 12.1023C8.67762 12.0975 8.67886 12.0948 8.6791 12.0943C8.67923 12.094 8.6791 12.0943 8.67872 12.0951C8.67853 12.0955 8.67828 12.0961 8.67797 12.0968C8.67781 12.0972 8.67764 12.0976 8.67745 12.098C8.67736 12.0982 8.6772 12.0986 8.67716 12.0987C8.677 12.099 8.67684 12.0994 9.59309 12.5C10.5093 12.9006 10.5092 12.901 10.509 12.9014C10.5089 12.9015 10.5088 12.9019 10.5086 12.9022C10.5084 12.9028 10.5081 12.9034 10.5078 12.9041C10.5072 12.9054 10.5066 12.9069 10.5058 12.9085C10.5044 12.9118 10.5027 12.9156 10.5006 12.9201C10.4966 12.929 10.4914 12.9403 10.485 12.9539C10.4723 12.9809 10.4548 13.017 10.4326 13.0608C10.3881 13.1482 10.3239 13.2673 10.2392 13.4076C10.071 13.6862 9.81549 14.0585 9.46368 14.4338C8.76125 15.1833 7.61699 16 6 16L6 14ZM3 11C3 11.8786 3.29646 12.6227 3.78758 13.1398C4.27116 13.6489 5.00139 14 6 14V16C4.49861 16 3.22884 15.4557 2.33742 14.5171C1.45354 13.5865 1 12.3305 1 11H3ZM6 8C5.00139 8 4.27116 8.35108 3.78758 8.86023C3.29646 9.37733 3 10.1214 3 11H1C1 9.66951 1.45354 8.41353 2.33742 7.48291C3.22884 6.54435 4.49861 6 6 6V8ZM9.59309 9.5C8.67684 9.90061 8.677 9.90098 8.67716 9.90134C8.6772 9.90145 8.67736 9.90179 8.67745 9.90201C8.67764 9.90243 8.67781 9.90283 8.67797 9.90318C8.67828 9.90389 8.67853 9.90446 8.67872 9.90488C8.6791 9.90573 8.67923 9.90601 8.6791 9.90574C8.67886 9.9052 8.67762 9.90247 8.67538 9.89771C8.67088 9.88816 8.66241 9.87052 8.64992 9.84596C8.62485 9.79668 8.58406 9.72046 8.52721 9.62632C8.41239 9.43618 8.23837 9.18347 8.00441 8.93384C7.53529 8.43331 6.88301 8 6 8V6C7.61699 6 8.76125 6.81669 9.46368 7.56616C9.81549 7.94153 10.071 8.31382 10.2392 8.59243C10.3239 8.73266 10.3881 8.85176 10.4326 8.9392C10.4548 8.98299 10.4723 9.01907 10.485 9.04614C10.4914 9.05968 10.4966 9.071 10.5006 9.07992C10.5027 9.08438 10.5044 9.08824 10.5059 9.0915C10.5066 9.09312 10.5072 9.09459 10.5078 9.09591C10.5081 9.09657 10.5084 9.09718 10.5086 9.09776C10.5088 9.09805 10.5089 9.09846 10.509 9.0986C10.5092 9.099 10.5093 9.09939 9.59309 9.5ZM6 15C3.79086 15 2 13.2091 2 11L4 11C4 12.1046 4.89543 13 6 13V15ZM10 11C10 13.2091 8.20914 15 6 15L6 13C7.10457 13 8 12.1046 8 11H10ZM6 7C8.20914 7 10 8.79086 10 11H8C8 9.89543 7.10457 9 6 9V7ZM2 11C2 8.79086 3.79086 7 6 7V9C4.89543 9 4 9.89543 4 11L2 11Z"
-            ></path>
-          </g>
-        </svg>
+        <div class="w-5" v-html="TokenIcon" />
         <input
           :type="showApiKey ? 'text' : 'password'"
           class="flex-1 overflow-hidden break-words rounded-sm border-none bg-transparent px-1 text-sm text-primary caret-primary focus:outline-none"
           v-model="auth.value"
           placeholder="value"
         />
-        <svg
+        <!-- SHOW API KEY ICON -->
+        <div
           v-if="showApiKey"
+          v-html="OpenEyeIcon"
           class="w-4 cursor-pointer stroke-current"
           @click="showApiKey = !showApiKey"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <path
-              d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <circle
-              cx="12"
-              cy="12"
-              r="3"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></circle>
-          </g>
-        </svg>
-        <svg
+        />
+        <!-- UNSHOW API KEY -->
+        <div
           v-else
+          v-html="ClosedEyeIcon"
           class="w-4 cursor-pointer"
           @click="showApiKey = !showApiKey"
-          viewBox="0 0 28 28"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              clip-rule="evenodd"
-              d="M22.6928 1.55018C22.3102 1.32626 21.8209 1.45915 21.6 1.84698L19.1533 6.14375C17.4864 5.36351 15.7609 4.96457 14.0142 4.96457C9.32104 4.96457 4.781 7.84644 1.11993 13.2641L1.10541 13.2854L1.09271 13.3038C0.970762 13.4784 0.967649 13.6837 1.0921 13.8563C3.79364 17.8691 6.97705 20.4972 10.3484 21.6018L8.39935 25.0222C8.1784 25.4101 8.30951 25.906 8.69214 26.1299L9.03857 26.3326C9.4212 26.5565 9.91046 26.4237 10.1314 26.0358L23.332 2.86058C23.553 2.47275 23.4219 1.97684 23.0392 1.75291L22.6928 1.55018ZM18.092 8.00705C16.7353 7.40974 15.3654 7.1186 14.0142 7.1186C10.6042 7.1186 7.07416 8.97311 3.93908 12.9239C3.63812 13.3032 3.63812 13.8561 3.93908 14.2354C6.28912 17.197 8.86102 18.9811 11.438 19.689L12.7855 17.3232C11.2462 16.8322 9.97333 15.4627 9.97333 13.5818C9.97333 11.2026 11.7969 9.27368 14.046 9.27368C15.0842 9.27368 16.0317 9.68468 16.7511 10.3612L18.092 8.00705ZM15.639 12.3137C15.2926 11.7767 14.7231 11.4277 14.046 11.4277C12.9205 11.4277 12 12.3906 12 13.5802C12 14.3664 12.8432 15.2851 13.9024 15.3624L15.639 12.3137Z"
-              fill-rule="evenodd"
-            ></path>
-            <path
-              d="M14.6873 22.1761C19.1311 21.9148 23.4056 19.0687 26.8864 13.931C26.9593 13.8234 27 13.7121 27 13.5797C27 13.4535 26.965 13.3481 26.8956 13.2455C25.5579 11.2677 24.1025 9.62885 22.5652 8.34557L21.506 10.2052C22.3887 10.9653 23.2531 11.87 24.0894 12.9239C24.3904 13.3032 24.3904 13.8561 24.0894 14.2354C21.5676 17.4135 18.7903 19.2357 16.0254 19.827L14.6873 22.1761Z"
-            ></path>
-          </g>
-        </svg>
+        />
       </div>
     </div>
   </div>
