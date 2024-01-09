@@ -390,12 +390,7 @@ const clickFileInput = (index: number) => {
     </div>
     <p v-if="!body.file" class="text-ex text-lg">Upload a file here</p>
     <input
-      v-on:input="
-        body.file = ($event!.target! as HTMLInputElement).files![0]
-        // body.file.arrayBuffer().then((buffer) => {
-        //   console.log(buffer);
-        // }); // -> might actually work
-      "
+      v-on:input="body.file = ($event!.target! as HTMLInputElement).files![0];"
       class="hidden"
       type="file"
       ref="newFile"
