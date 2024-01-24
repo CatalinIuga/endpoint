@@ -108,7 +108,7 @@ function getTextNodeAtPosition(root: Node, index: number) {
     contenteditable
     @keydown="checkSend"
     @paste="urlPaste"
-    class="flex-1 overflow-hidden break-words rounded-lg px-2 py-1 font-bold text-blue-400 caret-primary focus:outline-none"
+    class="flex-1 cursor-text overflow-hidden break-words rounded-lg px-2 py-1 font-bold text-blue-400 caret-primary focus:outline-none"
     @input="updateUrl"
   ></div>
 </template>
