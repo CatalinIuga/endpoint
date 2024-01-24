@@ -6,7 +6,7 @@ Endpoint is a simple HTTP client for testing APIs. It dosent provide (yet) any p
 
 ## Tech stack
 
-- Rust
+- Rust (Tauri)
 - Vue.js
 - TailwindCSS
 
