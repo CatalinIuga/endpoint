@@ -32,7 +32,7 @@ npm run tauri dev
 
 Currently the output panel is not yet finished, but the request panel and actually sending the request works fine.
 
-You can also preview the html response in the browser by clicking the "Preview" button.
+You can also preview the html response in panel browser by clicking the "Preview" button.
 
 ## TODO
 
