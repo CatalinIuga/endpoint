@@ -92,7 +92,7 @@ const path = () => {
     <button
       v-if="requestPreview"
       @click="store.clearPreview"
-      class="group rounded-md px-2 text-xs hover:bg-hovered transition-colors"
+      class="group rounded-md px-2 text-xs transition-colors hover:bg-hovered"
     >
       <div
         v-html="TrashIcon"
@@ -155,6 +155,24 @@ const path = () => {
         class="flex h-full w-full items-center justify-center"
       >
         <div v-html="LoadingIcon" class="size-10 animate-spin text-primary" />
+      </div>
+      <!-- Headers result -->
+      <div v-else-if="responsePreview" class="flex flex-col gap-2">
+        <div class="flex items-center gap-2 font-bold">
+          <div
+            class="font-extrabold"
+            :class="[coloredHttpStatus(responsePreview.status)]"
+          >
+            {{ responsePreview?.status }}
+          </div>
+          <div class="text-ternary opacity-80">HTTP/1.1</div>
+        </div>
+
+        <div v-for="(val, key) in responsePreview?.headers">
+          <span class="font-bold capitalize text-blue-500">{{ key }}</span>
+          <span class="text-orange-500">: </span>
+          <span class="text-primary">{{ val }}</span>
+        </div>
       </div>
 
       <!-- HTML PREVIEW -->
