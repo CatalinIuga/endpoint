@@ -9,6 +9,7 @@ import ReadonlyViewer from "./Highlighting/ReadonlyViewer.vue";
 
 // ICONS
 import LoadingIcon from "../assets/svg/loading.svg";
+import TrashIcon from "../assets/svg/trash.svg";
 
 const selectedTab = ref("Request");
 const previewHtml = ref(false);
@@ -91,15 +92,18 @@ const path = () => {
     <button
       v-if="requestPreview"
       @click="store.clearPreview"
-      class="rounded-md px-2 text-xs hover:bg-hovered"
+      class="group rounded-md px-2 text-xs hover:bg-hovered transition-colors"
     >
-      clear
+      <div
+        v-html="TrashIcon"
+        class="size-5 fill-none stroke-current group-hover:text-red-500"
+      />
     </button>
   </div>
 
   <!-- Error Message -->
   <div v-if="requestError" class="flex h-full w-full items-center">
-    <div class="flex flex-col items-center justify-center text-red-500">
+    <div class="flex flex-1 flex-col items-center justify-center text-red-500">
       <div class="size-10" v-html="XIcon" />
       <p class="text-sm">{{ requestError }}</p>
     </div>
@@ -190,6 +194,6 @@ const path = () => {
       <span class="text-sm text-primary">Preview</span>
     </button>
     <!-- Submenu or something... -->
-    <button class="rounded-md text-sm hover:bg-hovered">...</button>
+    <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button>
   </div>
 </template>

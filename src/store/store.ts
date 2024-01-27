@@ -98,7 +98,7 @@ export const useStore = defineStore("crld", () => {
         body: formated,
       };
     } catch (err: any) {
-      requestError.value = err.message;
+      requestError.value = "Could not complete the request.";
     } finally {
       requestLoading.value = false;
     }
