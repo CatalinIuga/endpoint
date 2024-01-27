@@ -22,7 +22,7 @@ const open = ref(false);
   <button
     class="relative z-10 flex w-fit items-center justify-between gap-2 rounded-lg fill-current px-2 py-1 text-sm shadow-md hover:bg-bg4"
     :class="[open ? 'bg-bg4' : 'bg-bg3']"
-    v-on:click="open = !open"
+    @click="open = !open"
   >
     <div v-if="auth.type === 'None'" v-html="NoneIcon" class="z-10 w-5" />
     <div
@@ -54,7 +54,7 @@ const open = ref(false);
       v-if="open"
     >
       <div
-        v-on:click="auth.type = option"
+        @click="auth.type = option"
         v-for="option in options"
         class="flex items-center gap-2 whitespace-nowrap rounded-md py-1 pl-2 pr-4 text-sm hover:bg-hovered"
         :class="[option === auth.type ? 'bg-selected' : '']"

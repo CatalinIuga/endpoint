@@ -37,7 +37,7 @@ const openSubtype = ref(false);
       <button
         class="relative z-10 flex w-fit items-center justify-between gap-2 rounded-lg fill-current px-2 py-1 text-sm shadow-md hover:bg-bg4"
         :class="[open ? 'bg-bg4' : 'bg-bg3']"
-        v-on:click="open = !open"
+        @click="open = !open"
       >
         <div v-if="body.type === 'None'" class="z-10 w-5" v-html="NoneIcon" />
         <div
@@ -68,7 +68,7 @@ const openSubtype = ref(false);
           v-if="open"
         >
           <div
-            v-on:click="body.type = option"
+            @click="body.type = option"
             v-for="option in options"
             class="flex items-center gap-2 whitespace-nowrap rounded-md py-1 pl-2 pr-4 text-sm hover:bg-hovered"
             :class="[option === body.type ? 'bg-selected' : '']"
@@ -104,7 +104,7 @@ const openSubtype = ref(false);
 
       <!-- SubtypeButton -->
       <button
-        v-on:click="openSubtype = !openSubtype"
+        @click="openSubtype = !openSubtype"
         class="relative z-10 flex w-fit items-center justify-between gap-2 rounded-lg fill-current px-2 py-1 pl-3 text-sm shadow-md hover:bg-bg4"
         :class="[openSubtype ? 'bg-bg4' : 'bg-bg3']"
         v-if="body.type === 'Text'"
@@ -121,7 +121,7 @@ const openSubtype = ref(false);
           v-if="openSubtype"
         >
           <div
-            v-on:click="body.subtype = option"
+            @click="body.subtype = option"
             v-for="option in textOptionSubtypes"
             class="flex items-center gap-2 whitespace-nowrap rounded-md py-1 pl-2 pr-4 text-sm hover:bg-hovered"
             :class="[option === body.subtype ? 'bg-selected' : '']"
@@ -138,7 +138,7 @@ const openSubtype = ref(false);
 
       <!-- Multipart form toggle -->
       <button
-        v-on:click="body.multipart = !body.multipart"
+        @click="body.multipart = !body.multipart"
         class="relative flex items-center justify-between gap-2 rounded-lg fill-current px-2 py-1 text-sm"
         v-if="body.type === 'Form'"
       >

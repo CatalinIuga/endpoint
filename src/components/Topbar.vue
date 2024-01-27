@@ -44,7 +44,7 @@ const coloredHttpMethodClass = computed(() => {
         coloredHttpMethodClass(method),
         open ? 'bg-bg4 text-primary' : '',
       ]"
-      v-on:click="open = !open"
+      @click="open = !open"
     >
       {{ method }}
       <!-- SELECTOR ICON -->
@@ -57,7 +57,7 @@ const coloredHttpMethodClass = computed(() => {
         v-if="open"
       >
         <div
-          v-on:click="method = mtd"
+          @click="method = mtd"
           v-for="mtd in methods"
           class="flex items-center gap-2 rounded-md py-1 pl-2 pr-7 text-sm hover:bg-hovered"
           :class="[
@@ -82,7 +82,7 @@ const coloredHttpMethodClass = computed(() => {
     <!-- SEND BUTTON -->
     <button
       class="flex rounded-md bg-green-400 px-4 py-1 text-sm text-secondary hover:bg-green-300"
-      v-on:click="store.sendRequest()"
+      @click="store.sendRequest()"
     >
       <span class="hidden sm:block">Send</span>
       <!-- PLANE ICON -->

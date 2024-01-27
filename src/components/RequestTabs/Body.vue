@@ -125,9 +125,7 @@ const clickFileInput = (index: number) => {
           :id="index.toString() + 'file'"
           class="hidden"
           type="file"
-          v-on:change="
-            data.file = ($event!.target as HTMLInputElement).files![0]
-          "
+          @change="data.file = ($event!.target as HTMLInputElement).files![0]"
           placeholder="file"
         />
       </div>
@@ -143,7 +141,7 @@ const clickFileInput = (index: number) => {
       />
       <input
         :id="index.toString() + 'file'"
-        v-on:input="
+        @input="
           data.file = ($event!.target! as HTMLInputElement).files![0];
           data.value = undefined;
         "
@@ -206,7 +204,7 @@ const clickFileInput = (index: number) => {
       />
       <input
         ref="newFile"
-        v-on:input="
+        @input="
           newFileInput = ($event!.target! as HTMLInputElement).files![0];
           addNewFormInput('file');
         "
@@ -241,7 +239,7 @@ const clickFileInput = (index: number) => {
     </div>
     <p v-if="!body.file" class="text-ex text-lg">Upload a file here</p>
     <input
-      v-on:input="body.file = ($event!.target! as HTMLInputElement).files![0]"
+      @input="body.file = ($event!.target! as HTMLInputElement).files![0]"
       class="hidden"
       type="file"
       ref="newFile"
