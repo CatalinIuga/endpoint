@@ -69,6 +69,11 @@ export const useStore = defineStore("crld", () => {
       method: method.value,
       timeout: 6000,
     };
+    if (auth.value.type === "Bearer token") {
+      options.headers = {
+        Authorization: `Bearer ${auth.value.token}`,
+      };
+    }
 
     try {
       // Simulate a delay of 10 seconds
