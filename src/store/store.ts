@@ -43,6 +43,9 @@ export const useStore = defineStore("crld", () => {
     statusText: string;
     headers: Record<string, string>;
     body: string;
+    size?: number;
+    executionTime?: number;
+    sentAt?: string;
   } | null>(null);
 
   const requestLoading = ref(false);
@@ -78,11 +81,13 @@ export const useStore = defineStore("crld", () => {
     try {
       // Simulate a delay of 10 seconds
       // await new Promise((resolve) => setTimeout(resolve, 3000));
-
+      const start = performance.now();
       const response = await fetch(url.value, options);
+      const end = performance.now();
 
       const data = response.data as string;
-
+      console.log(data.length);
+      
       const formated = await prettier
         .format(response.data as string, {
           parser: "html",
@@ -101,6 +106,9 @@ export const useStore = defineStore("crld", () => {
         statusText: statusText(response.status),
         headers: response.headers,
         body: formated,
+        size: 12,
+        executionTime: end - start,
+        sentAt: new Date().toISOString(),
       };
     } catch (err: any) {
       requestError.value = "Could not complete the request.";

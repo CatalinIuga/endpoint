@@ -127,7 +127,7 @@ const checkValidity = (index: number) => {
       </button>
       <div
         class="absolute bottom-0 left-2 w-[calc(100%-1rem)] border-b-[1px] border-primary border-opacity-5 group-hover:border-bg3"
-      ></div>
+      />
     </div>
   </div>
 </template>

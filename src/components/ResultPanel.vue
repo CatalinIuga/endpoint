@@ -30,6 +30,8 @@ const path = () => {
   }
   return "";
 };
+
+const openHeaderPreview = ref(false);
 </script>
 
 <template>
@@ -156,22 +158,46 @@ const path = () => {
       >
         <div v-html="LoadingIcon" class="size-10 animate-spin text-primary" />
       </div>
+
       <!-- Headers result -->
-      <div v-else-if="responsePreview" class="flex flex-col gap-2">
-        <div class="flex items-center gap-2 font-bold">
+      <div v-else-if="responsePreview" class="flex flex-col gap-1 px-1 pb-2">
+        <div
+          @click="openHeaderPreview = !openHeaderPreview"
+          class="group relative flex items-center gap-2 rounded-md p-1 font-bold hover:bg-bg3"
+        >
+          <button
+            class="size-5 rounded-md fill-current text-center text-xs text-ternary transition-colors hover:bg-bg4"
+            :class="openHeaderPreview ? 'rotate-90' : ''"
+          >
+            {{ "▶" }}
+          </button>
+          <div class="text-ternary/30">HTTP/1.1</div>
           <div
             class="font-extrabold"
             :class="[coloredHttpStatus(responsePreview.status)]"
           >
             {{ responsePreview?.status }}
           </div>
-          <div class="text-ternary opacity-80">HTTP/1.1</div>
+          <div v-if="!openHeaderPreview" class="text-ternary">
+            {{
+              "(" + Object.keys(responsePreview.headers).length + " headers)"
+            }}
+          </div>
+          <div
+            class="absolute bottom-0 left-2 w-[calc(100%-1rem)] border-b-[1px] border-primary border-opacity-5 group-hover:border-bg3"
+          />
         </div>
 
-        <div v-for="(val, key) in responsePreview?.headers">
-          <span class="font-bold capitalize text-blue-500">{{ key }}</span>
-          <span class="text-orange-500">: </span>
-          <span class="text-primary">{{ val }}</span>
+        <div v-if="openHeaderPreview" class="flex flex-col px-2">
+          <div
+            v-for="(val, key) in responsePreview?.headers"
+            class="flex gap-2 border-b-[1px] border-primary border-opacity-5 p-[2px]"
+          >
+            <div class="flex-1 px-1 font-bold capitalize text-blue-500">
+              {{ key }}
+            </div>
+            <span class="flex-1 text-primary">{{ val }}</span>
+          </div>
         </div>
       </div>
 
@@ -210,6 +236,10 @@ const path = () => {
         }"
       ></span>
       <span class="text-sm text-primary">Preview</span>
+    </button>
+    <!-- Request info -->
+    <button class="rounded-md pb-2 text-sm hover:bg-hovered">
+      {{ responsePreview?.size }}
     </button>
     <!-- Submenu or something... -->
     <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button>
