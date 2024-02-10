@@ -226,7 +226,7 @@ const openHeaderPreview = ref(false);
       <span
         class="left-0 inline-block h-5 w-9 rounded-3xl shadow-sm transition-transform"
         :class="[previewHtml ? 'bg-green-400' : 'bg-bg4']"
-      ></span>
+      />
       <span
         class="absolute left-3 inline-block h-4 w-4 transform rounded-full shadow-sm transition-transform"
         :class="{
@@ -234,14 +234,34 @@ const openHeaderPreview = ref(false);
           'bg-bg': previewHtml,
           'bg-primary': !previewHtml,
         }"
-      ></span>
+      />
       <span class="text-sm text-primary">Preview</span>
     </button>
     <!-- Request info -->
-    <button class="rounded-md pb-2 text-sm hover:bg-hovered">
-      {{ responsePreview?.size }}
+    <button
+      class="group relative items-center rounded-md p-1 pb-2 text-xs hover:bg-hovered"
+    >
+      <div
+        class="invisible absolute -top-20 right-0 flex flex-col rounded-md bg-bg4 p-1 group-hover:visible"
+      >
+        <div class="flex items-center gap-2 p-2">
+          <span class="text-ternary">Response size:</span>
+          <span class="text-ternary">{{ responsePreview?.size }}</span>
+        </div>
+        <div class="flex items-center gap-2 p-2">
+          <span class="text-primary">Executed for:</span>
+          <span class="text-primary"
+            >{{ responsePreview?.executionTime }} ms</span
+          >
+        </div>
+        <div class="flex items-center gap-2 p-2">
+          <span class="text-primary">Sent at:</span>
+          <span class="text-primary">{{ responsePreview?.sentAt }}</span>
+        </div>
+      </div>
+      ...
     </button>
     <!-- Submenu or something... -->
-    <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button>
+    <!-- <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button> -->
   </div>
 </template>

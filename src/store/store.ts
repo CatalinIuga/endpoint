@@ -86,8 +86,7 @@ export const useStore = defineStore("crld", () => {
       const end = performance.now();
 
       const data = response.data as string;
-      console.log(data.length);
-      
+
       const formated = await prettier
         .format(response.data as string, {
           parser: "html",
