@@ -81,6 +81,8 @@ export const useStore = defineStore("crld", () => {
     try {
       // Simulate a delay of 10 seconds
       // await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // time the request
       const start = performance.now();
       const response = await fetch(url.value, options);
       const end = performance.now();
@@ -105,7 +107,7 @@ export const useStore = defineStore("crld", () => {
         statusText: statusText(response.status),
         headers: response.headers,
         body: formated,
-        size: 12,
+        size: data.length,
         executionTime: end - start,
         sentAt: new Date().toISOString(),
       };

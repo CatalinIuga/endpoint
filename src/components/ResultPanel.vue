@@ -31,6 +31,66 @@ const path = () => {
   return "";
 };
 
+const relativeTime = ref("now");
+
+const getRelativeTime = (date: string) => {
+  const now = new Date();
+  const sentAt = new Date(date);
+  const diff = now.getTime() - sentAt.getTime();
+  if (diff < 1000) return "now";
+  if (diff < 60 * 1000) return `${Math.floor(diff / 1000)}s ago`;
+  if (diff < 60 * 60 * 1000) return `${Math.floor(diff / (60 * 1000))}m ago`;
+  if (diff < 24 * 60 * 60 * 1000)
+    return `${Math.floor(diff / (60 * 60 * 1000))}h ago`;
+  return `${Math.floor(diff / (24 * 60 * 60 * 1000))}d ago`;
+};
+
+setInterval(() => {
+  if (!responsePreview.value) return;
+  relativeTime.value = getRelativeTime(responsePreview.value.sentAt!);
+}, 1000);
+
+const preattySize = (
+  size: number,
+
+  decimals: boolean = false,
+) => {
+  const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+  return (
+    (size / Math.pow(1024, i))
+      .toFixed(decimals ? 2 : 0)
+      .toString()
+      .replace(/\.?0*$/, "") + ["B", "KB", "MB", "GB", "TB"][i]
+  );
+};
+
+const preattyTime = (time: number, decimals: boolean = false) => {
+  if (time < 1000) {
+    return `${time
+      .toFixed(decimals ? 2 : 0)
+      .toString()
+      .replace(/\.?0*$/, "")}ms`;
+  }
+  return `${(time / 1000)
+    .toFixed(decimals ? 2 : 0)
+    .toString()
+    .replace(/\.?0*$/, "")}s`;
+};
+
+const dateOptions: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+  timeZone: "Europe/Bucharest",
+};
+
+const formattedDate = (date: string) => {
+  return new Intl.DateTimeFormat("en-US", dateOptions).format(new Date(date));
+};
+
 const openHeaderPreview = ref(false);
 </script>
 
@@ -178,6 +238,12 @@ const openHeaderPreview = ref(false);
           >
             {{ responsePreview?.status }}
           </div>
+          <div
+            class="font-extrabold"
+            :class="[coloredHttpStatus(responsePreview.status)]"
+          >
+            {{ responsePreview?.statusText }}
+          </div>
           <div v-if="!openHeaderPreview" class="text-ternary">
             {{
               "(" + Object.keys(responsePreview.headers).length + " headers)"
@@ -191,12 +257,16 @@ const openHeaderPreview = ref(false);
         <div v-if="openHeaderPreview" class="flex flex-col px-2">
           <div
             v-for="(val, key) in responsePreview?.headers"
-            class="flex gap-2 border-b-[1px] border-primary border-opacity-5 p-[2px]"
+            class="flex gap-2 border-b-[1px] border-primary border-opacity-5 py-1 text-sm"
           >
-            <div class="flex-1 px-1 font-bold capitalize text-blue-500">
+            <div
+              class="w-1/3 max-w-xs flex-shrink-0 flex-grow-0 overflow-hidden overflow-ellipsis font-bold capitalize text-blue-500"
+            >
               {{ key }}
             </div>
-            <span class="flex-1 text-primary">{{ val }}</span>
+            <span class="overflow-hidden break-all text-primary">{{
+              val
+            }}</span>
           </div>
         </div>
       </div>
@@ -238,30 +308,44 @@ const openHeaderPreview = ref(false);
       <span class="text-sm text-primary">Preview</span>
     </button>
     <!-- Request info -->
-    <button
-      class="group relative items-center rounded-md p-1 pb-2 text-xs hover:bg-hovered"
-    >
-      <div
-        class="invisible absolute -top-20 right-0 flex flex-col rounded-md bg-bg4 p-1 group-hover:visible"
+    <div class="flex items-center gap-2">
+      <button
+        v-if="responsePreview"
+        class="group relative items-center rounded-md bg-bg3 px-2 py-1 text-xs tracking-tighter text-ternary shadow-md hover:bg-hovered"
       >
-        <div class="flex items-center gap-2 p-2">
-          <span class="text-ternary">Response size:</span>
-          <span class="text-ternary">{{ responsePreview?.size }}</span>
-        </div>
-        <div class="flex items-center gap-2 p-2">
-          <span class="text-primary">Executed for:</span>
-          <span class="text-primary"
-            >{{ responsePreview?.executionTime }} ms</span
+        {{ preattySize(responsePreview?.size!) }},
+        {{ preattyTime(responsePreview?.executionTime!) }},
+        {{ relativeTime }}
+
+        <div
+          class="invisible absolute -left-14 bottom-8 flex w-56 flex-col gap-1 rounded-md bg-bg4 p-2 text-xs group-hover:visible"
+        >
+          <div
+            class="flex items-center justify-between border-b-[1px] border-primary border-opacity-5"
           >
+            <div class="whitespace-pre">Response size:</div>
+            <div class="text-primary">
+              {{ preattySize(responsePreview.size!, true) }}
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="whitespace-pre">Executed for:</div>
+            <div class="text-primary">
+              {{ preattyTime(responsePreview.executionTime!, true) }}
+            </div>
+          </div>
+          <div
+            class="flex items-center justify-between gap-2 border-b-[1px] border-primary border-opacity-5"
+          >
+            <div class="whitespace-pre">Sent at:</div>
+            <div class="text-primary">
+              {{ formattedDate(responsePreview.sentAt!) }}
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-2 p-2">
-          <span class="text-primary">Sent at:</span>
-          <span class="text-primary">{{ responsePreview?.sentAt }}</span>
-        </div>
-      </div>
-      ...
-    </button>
-    <!-- Submenu or something... -->
-    <!-- <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button> -->
+      </button>
+      <!-- Submenu or something... -->
+      <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button>
+    </div>
   </div>
 </template>
