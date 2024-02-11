@@ -321,21 +321,21 @@ const openHeaderPreview = ref(false);
           class="invisible absolute -left-14 bottom-8 flex w-56 flex-col gap-1 rounded-md bg-bg4 p-2 text-xs group-hover:visible"
         >
           <div
-            class="flex items-center justify-between border-b-[1px] border-primary border-opacity-5"
+            class="flex items-center justify-between border-b-[1px] border-primary border-opacity-5 pb-[5px]"
           >
             <div class="whitespace-pre">Response size:</div>
             <div class="text-primary">
               {{ preattySize(responsePreview.size!, true) }}
             </div>
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between p-[1px]">
             <div class="whitespace-pre">Executed for:</div>
             <div class="text-primary">
               {{ preattyTime(responsePreview.executionTime!, true) }}
             </div>
           </div>
           <div
-            class="flex items-center justify-between gap-2 border-b-[1px] border-primary border-opacity-5"
+            class="flex items-center justify-between gap-2 border-t-[1px] border-primary border-opacity-5 pt-[5px]"
           >
             <div class="whitespace-pre">Sent at:</div>
             <div class="text-primary">
@@ -344,7 +344,6 @@ const openHeaderPreview = ref(false);
           </div>
         </div>
       </button>
-      <!-- Submenu or something... -->
       <button class="rounded-md pb-2 text-sm hover:bg-hovered">...</button>
     </div>
   </div>
