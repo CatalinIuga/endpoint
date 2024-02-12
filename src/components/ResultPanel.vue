@@ -182,35 +182,67 @@ const openHeaderPreview = ref(false);
   <!-- Request&Response Viewers -->
   <div v-else class="h-full w-full overflow-y-auto">
     <!-- REQUEST VIEWER -->
-    <div v-if="selectedTab === 'Request' && requestPreview" class="p-2">
-      <!-- METHOD, PATH, STATUS VIEWER -->
-      <div class="flex items-center gap-2 font-bold">
-        <div
-          class="font-extrabold"
-          :class="[coloredHttpMethod(requestPreview.method)]"
-        >
-          {{ requestPreview?.method }}
-        </div>
-        <div class="overflow-hidden break-words text-primary">
-          {{ path() }}
-        </div>
-        <div class="text-ternary opacity-80">HTTP/1.1</div>
-      </div>
-
+    <div
+      v-if="selectedTab === 'Request' && requestPreview"
+      class="h-full w-full p-2"
+    >
       <!-- HEADERS VIEWER -->
-      <div class="flex flex-col gap-2">
-        <div v-for="header in requestPreview?.headers" class="">
-          <span class="text-ternary">{{ header.name }}:</span>
-          <span class="text-primary">{{ header.value }}</span>
+      <div v-if="requestPreview" class="flex flex-col gap-1 px-1 pb-2">
+        <div
+          @click="openHeaderPreview = !openHeaderPreview"
+          class="group relative flex items-center gap-2 rounded-md p-1 font-bold hover:bg-bg3"
+        >
+          <!-- METHOD, PATH, STATUS VIEWER -->
+          <button
+            class="size-5 rounded-md fill-current text-center text-xs text-ternary transition-colors hover:bg-bg4"
+            :class="openHeaderPreview ? 'rotate-90' : ''"
+          >
+            {{ "▶" }}
+          </button>
+          <div
+            class="font-extrabold"
+            :class="[coloredHttpMethod(requestPreview.method)]"
+          >
+            {{ requestPreview.method }}
+          </div>
+          <div class="font-extrabold">
+            {{ path() }}
+          </div>
+          <div class="text-ternary/30">HTTP/1.1</div>
+
+          <div v-if="!openHeaderPreview" class="text-ternary">
+            {{
+              "(" +
+              requestPreview.headers.filter((h) => h.checked).length +
+              " headers)"
+            }}
+          </div>
+          <div
+            class="absolute bottom-0 left-2 w-[calc(100%-1rem)] border-b-[1px] border-primary border-opacity-5 group-hover:border-bg3"
+          />
+        </div>
+        <div v-if="openHeaderPreview" class="flex flex-col px-2">
+          <div
+            v-for="val in requestPreview?.headers.filter((h) => h.checked)"
+            class="flex gap-2 border-b-[1px] border-primary border-opacity-5 py-1 text-sm"
+          >
+            <div
+              class="w-1/3 max-w-xs flex-shrink-0 flex-grow-0 overflow-hidden overflow-ellipsis font-bold capitalize text-blue-500"
+            >
+              {{ val.name }}
+            </div>
+            <span
+              class="overflow-hidden break-all text-primary"
+            >
+              {{ val.value || "<no-value>" }}
+            </span>
+          </div>
         </div>
       </div>
-      <pre>
-        {{ JSON.stringify(requestPreview, null, 4) }}
-      </pre>
     </div>
 
     <!-- RESPONSE VIEWER -->
-    <div v-else="selectedTab === 'Response'" class="h-full w-full py-2 pr-2">
+    <div v-else="selectedTab === 'Response'" class="h-full w-full p-2">
       <!-- Loading Spinner -->
       <div
         v-if="requestLoading"
@@ -307,7 +339,7 @@ const openHeaderPreview = ref(false);
       />
       <span class="text-sm text-primary">Preview</span>
     </button>
-    <!-- Request info -->
+    <!-- Response info -->
     <div class="flex items-center gap-2">
       <button
         v-if="responsePreview"
@@ -317,8 +349,9 @@ const openHeaderPreview = ref(false);
         {{ preattyTime(responsePreview?.executionTime!) }},
         {{ relativeTime }}
 
+        <!-- Response details -->
         <div
-          class="invisible absolute -left-14 bottom-8 flex w-56 flex-col gap-1 rounded-md bg-bg4 p-2 text-xs group-hover:visible"
+          class="invisible absolute -left-14 bottom-8 flex w-56 flex-col gap-1 rounded-md bg-bg4 p-2 text-xs shadow-md group-hover:visible"
         >
           <div
             class="flex items-center justify-between border-b-[1px] border-primary border-opacity-5 pb-[5px]"

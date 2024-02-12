@@ -61,8 +61,10 @@ export const useStore = defineStore("crld", () => {
     requestPreview.value = {
       url: url.value,
       method: method.value,
-      parameters: structuredClone(toRaw(parameters.value)),
-      headers: structuredClone(toRaw(headers.value)),
+      parameters: structuredClone(
+        toRaw(parameters.value).filter((p) => p.checked),
+      ),
+      headers: structuredClone(toRaw(headers.value).filter((h) => h.checked)),
       auth: structuredClone(toRaw(auth.value)),
       body: structuredClone(toRaw(body.value)),
     };

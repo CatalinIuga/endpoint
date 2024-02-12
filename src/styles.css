@@ -23,7 +23,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply h-4 rounded-sm bg-bg4 hover:bg-bg5;
+  @apply h-4 rounded-sm bg-bg4/70 hover:bg-bg5/70;
 }
 
 /* PRISM JS THEME FOR URL PARSING */
