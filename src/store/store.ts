@@ -8,7 +8,7 @@ import {
 import prettierPluginHtml from "https://unpkg.com/prettier@3.1.1/plugins/html.mjs";
 import { defineStore } from "pinia";
 import prettier from "prettier/standalone";
-import { ref, shallowRef, toRaw } from "vue";
+import { ref, shallowRef, toRaw, watch } from "vue";
 import {
   type Auth,
   type Body,
@@ -26,6 +26,45 @@ export const useStore = defineStore("crld", () => {
   const headers = ref<Array<Header>>([]);
   const auth = ref<Auth>({ type: "None" });
   const body = ref<Body>({ type: "None" });
+
+  // on changes to auth or body type, reset the fields
+  // -> this is to ensure that the user does not send
+  // -> an invalid request
+  watch(
+    auth,
+    (newAuth: Auth) => {
+      if (newAuth.type === "API key") {
+        auth.value = { type: "API key", header: "", key: "" };
+      } else if (newAuth.type === "Bearer token") {
+        auth.value = { type: "Bearer token", token: "" };
+      } else if (newAuth.type === "Basic auth") {
+        auth.value = { type: "Basic auth", username: "", password: "" };
+      } else {
+        auth.value = { type: "None" };
+      }
+    },
+    { deep: true },
+  );
+
+  watch(
+    body,
+    (newBody: Body) => {
+      if (newBody.type === "Form") {
+        body.value = {
+          type: "Form",
+          data: [],
+          multipart: false,
+        };
+      } else if (newBody.type === "Text") {
+        body.value = { type: "Text", subtype: "Raw", text: "" };
+      } else if (newBody.type === "File") {
+        body.value = { type: "File", file: undefined };
+      } else {
+        body.value = { type: "None" };
+      }
+    },
+    { deep: true },
+  );
 
   // RESPONSE STATES
   // -> this gets sent back to the UI for display

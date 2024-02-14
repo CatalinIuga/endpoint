@@ -221,6 +221,7 @@ const openHeaderPreview = ref(false);
             class="absolute bottom-0 left-2 w-[calc(100%-1rem)] border-b-[1px] border-primary border-opacity-5 group-hover:border-bg3"
           />
         </div>
+        <!-- Request preview headers -->
         <div v-if="openHeaderPreview" class="flex flex-col px-2">
           <div
             v-for="val in requestPreview?.headers.filter((h) => h.checked)"
@@ -238,6 +239,14 @@ const openHeaderPreview = ref(false);
             </span>
           </div>
         </div>
+        <!-- Request preview body -->
+        <div v-if="requestPreview.body" class="flex flex-col px-2">
+          <div class="flex gap-2 border-b-[1px] border-primary border-opacity-5 py-1 text-sm">
+            <span class="overflow-hidden break-all text-primary">
+              {{ requestPreview.body }}
+            </span>
+          </div>
+        </div>  
       </div>
     </div>
 
