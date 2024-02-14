@@ -34,7 +34,7 @@ export const useStore = defineStore("crld", () => {
     auth,
     (newAuth: Auth) => {
       if (newAuth.type === "API key") {
-        auth.value = { type: "API key", header: "", key: "" };
+        auth.value = { type: "API key", header: "", value: "" };
       } else if (newAuth.type === "Bearer token") {
         auth.value = { type: "Bearer token", token: "" };
       } else if (newAuth.type === "Basic auth") {
