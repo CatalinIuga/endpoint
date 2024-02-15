@@ -27,43 +27,68 @@ export const useStore = defineStore("crld", () => {
   const auth = ref<Auth>({ type: "None" });
   const body = ref<Body>({ type: "None" });
 
-  // on changes to auth or body type, reset the fields
-  // -> this is to ensure that the user does not send
-  // -> an invalid request
   watch(
-    auth,
-    (newAuth: Auth) => {
-      if (newAuth.type === "API key") {
-        auth.value = { type: "API key", header: "", value: "" };
-      } else if (newAuth.type === "Bearer token") {
-        auth.value = { type: "Bearer token", token: "" };
-      } else if (newAuth.type === "Basic auth") {
-        auth.value = { type: "Basic auth", username: "", password: "" };
+    () => auth.value.type,
+    (newType: string, oldType: string) => {
+      if (newType === oldType) return;
+
+      if (newType === "None") {
+        auth.value = {
+          type: "None",
+        };
+      } else if (newType === "Basic auth") {
+        auth.value = {
+          type: "Basic auth",
+          username: "",
+          password: "",
+        };
+      } else if (newType === "Bearer token") {
+        auth.value = {
+          type: "Bearer token",
+          token: "",
+        };
+      } else if (newType === "API key") {
+        auth.value = {
+          type: "API key",
+          header: "",
+          value: "",
+        };
       } else {
-        auth.value = { type: "None" };
+        auth.value = {
+          type: "None",
+        };
       }
     },
-    { deep: true },
   );
 
   watch(
-    body,
-    (newBody: Body) => {
-      if (newBody.type === "Form") {
+    () => body.value.type,
+    (newType: string, oldType: string) => {
+      if (newType === oldType) return;
+
+      if (newType === "Form") {
         body.value = {
           type: "Form",
           data: [],
           multipart: false,
         };
-      } else if (newBody.type === "Text") {
-        body.value = { type: "Text", subtype: "Raw", text: "" };
-      } else if (newBody.type === "File") {
-        body.value = { type: "File", file: undefined };
+      } else if (newType === "Text") {
+        body.value = {
+          type: "Text",
+          subtype: "Raw",
+          text: "",
+        };
+      } else if (newType === "File") {
+        body.value = {
+          type: "File",
+          file: undefined,
+        };
       } else {
-        body.value = { type: "None" };
+        body.value = {
+          type: "None",
+        };
       }
     },
-    { deep: true },
   );
 
   // RESPONSE STATES
@@ -73,8 +98,8 @@ export const useStore = defineStore("crld", () => {
     method: HttpVerb;
     parameters: Array<Parameter>; // filter this
     headers: Array<Header>; // filter this
-    auth: Auth; // filter this
-    body: Body; // filter this
+    auth: Auth;
+    body: Body;
   } | null>(null);
 
   const responsePreview = ref<{
@@ -124,9 +149,11 @@ export const useStore = defineStore("crld", () => {
       // await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // time the request
-      const start = performance.now();
+      const START = performance.now();
+
       const response = await fetch(url.value, options);
-      const end = performance.now();
+
+      const END = performance.now();
 
       const data = response.data as string;
 
@@ -143,13 +170,14 @@ export const useStore = defineStore("crld", () => {
           return data;
         });
 
+      // map the response to the responsePreview
       responsePreview.value = {
         status: response.status,
         statusText: statusText(response.status),
         headers: response.headers,
         body: formated,
         size: data.length,
-        executionTime: end - start,
+        executionTime: END - START,
         sentAt: new Date().toISOString(),
       };
     } catch (err: any) {

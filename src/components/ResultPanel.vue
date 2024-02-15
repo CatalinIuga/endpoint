@@ -15,7 +15,7 @@ const selectedTab = ref("Request");
 const previewHtml = ref(false);
 
 const store = useStore();
-const { responsePreview, requestPreview, requestLoading, requestError } =
+const { responsePreview, requestPreview, requestLoading, requestError, body } =
   storeToRefs(store);
 
 const path = () => {
@@ -243,7 +243,7 @@ const openHeaderPreview = ref(false);
         <div v-if="requestPreview.body" class="flex flex-col px-2">
           <div class="flex gap-2 border-b-[1px] border-primary border-opacity-5 py-1 text-sm">
             <span class="overflow-hidden break-all text-primary">
-              {{ requestPreview.body }}
+              {{ body }}
             </span>
           </div>
         </div>  
@@ -315,8 +315,9 @@ const openHeaderPreview = ref(false);
       <!-- HTML PREVIEW -->
       <iframe
         v-if="responsePreview && previewHtml"
-        class="h-full w-full rounded-md"
-        sandbox="allow-scripts allow-same-origin"
+        class="h-full w-full rounded-md pointer-events-none"
+        sandbox="allow-scripts"
+        
         :srcdoc="`<base href='${requestPreview?.url}'>` + responsePreview.body"
       />
 
