@@ -15,21 +15,9 @@ const selectedTab = ref("Request");
 const previewHtml = ref(false);
 
 const store = useStore();
-const { responsePreview, requestPreview, requestLoading, requestError, body } =
+const { responsePreview, requestPreview, requestLoading, requestError } =
   storeToRefs(store);
 
-const path = () => {
-  if (requestPreview.value) {
-    let url = new URL(requestPreview.value.url);
-    const params = requestPreview.value.parameters
-      .filter((param) => param.checked && param.key !== "")
-      .map((param) => `${param.key}=${param.value}`)
-      .join("&");
-    url.search = params ? url.search + "&" + params : url.search;
-    return url.pathname + url.search;
-  }
-  return "";
-};
 
 const relativeTime = ref("now");
 
@@ -206,14 +194,15 @@ const openHeaderPreview = ref(false);
             {{ requestPreview.method }}
           </div>
           <div class="font-extrabold">
-            {{ path() }}
+            {{ requestPreview.url }}
           </div>
           <div class="text-ternary/30">HTTP/1.1</div>
 
           <div v-if="!openHeaderPreview" class="text-ternary">
             {{
               "(" +
-              requestPreview.headers.filter((h) => h.checked).length +
+              Object.keys(requestPreview.headers ?? {}).length 
+               +
               " headers)"
             }}
           </div>
@@ -224,18 +213,18 @@ const openHeaderPreview = ref(false);
         <!-- Request preview headers -->
         <div v-if="openHeaderPreview" class="flex flex-col px-2">
           <div
-            v-for="val in requestPreview?.headers.filter((h) => h.checked)"
+            v-for="val in Object.entries(requestPreview.headers ?? {})"
             class="flex gap-2 border-b-[1px] border-primary border-opacity-5 py-1 text-sm"
           >
             <div
               class="w-1/3 max-w-xs flex-shrink-0 flex-grow-0 overflow-hidden overflow-ellipsis font-bold capitalize text-blue-500"
             >
-              {{ val.name }}
+              {{ val[0] }}
             </div>
             <span
               class="overflow-hidden break-all text-primary"
             >
-              {{ val.value || "<no-value>" }}
+              {{ val[1] || "<no-value>" }}
             </span>
           </div>
         </div>
@@ -243,7 +232,10 @@ const openHeaderPreview = ref(false);
         <div v-if="requestPreview.body" class="flex flex-col px-2">
           <div class="flex gap-2 border-b-[1px] border-primary border-opacity-5 py-1 text-sm">
             <span class="overflow-hidden break-all text-primary">
-              {{ body }}
+              {{ 
+                
+                requestPreview.body.payload || "<no-payload>"
+                }}
             </span>
           </div>
         </div>  

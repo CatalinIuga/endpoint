@@ -1,20 +1,16 @@
-import {
-  FetchOptions,
-  HttpVerb,
-  ResponseType,
-  fetch,
-} from "@tauri-apps/api/http";
-// @ts-expect-error -> Deno clears this!
+import { HttpVerb, Body as RequestBody } from "@tauri-apps/api/http";
+// @ts-expect-error
 import prettierPluginHtml from "https://unpkg.com/prettier@3.1.1/plugins/html.mjs";
 import { defineStore } from "pinia";
 import prettier from "prettier/standalone";
-import { ref, shallowRef, toRaw, watch } from "vue";
+import { ref, shallowRef, watch } from "vue";
 import {
   type Auth,
   type Body,
   type Header,
   type Parameter,
 } from "../types/types";
+import { doRequest } from "../utils/httpClient";
 import { statusText } from "../utils/statusText";
 
 export const useStore = defineStore("crld", () => {
@@ -96,10 +92,8 @@ export const useStore = defineStore("crld", () => {
   const requestPreview = shallowRef<{
     url: string;
     method: HttpVerb;
-    parameters: Array<Parameter>; // filter this
-    headers: Array<Header>; // filter this
-    auth: Auth;
-    body: Body;
+    headers: Record<string, string> | undefined;
+    body: RequestBody | undefined;
   } | null>(null);
 
   const responsePreview = ref<{
@@ -120,30 +114,6 @@ export const useStore = defineStore("crld", () => {
     clearPreview();
     requestLoading.value = true;
 
-    // TODO: filter out the parameters, headers, auth and body
-    // -> that are not selected by the user
-    requestPreview.value = {
-      url: url.value,
-      method: method.value,
-      parameters: structuredClone(
-        toRaw(parameters.value).filter((p) => p.checked),
-      ),
-      headers: structuredClone(toRaw(headers.value).filter((h) => h.checked)),
-      auth: structuredClone(toRaw(auth.value)),
-      body: structuredClone(toRaw(body.value)),
-    };
-
-    const options: FetchOptions = {
-      responseType: ResponseType.Text,
-      method: method.value,
-      timeout: 6000,
-    };
-    if (auth.value.type === "Bearer token") {
-      options.headers = {
-        Authorization: `Bearer ${auth.value.token}`,
-      };
-    }
-
     try {
       // Simulate a delay of 10 seconds
       // await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -151,14 +121,31 @@ export const useStore = defineStore("crld", () => {
       // time the request
       const START = performance.now();
 
-      const response = await fetch(url.value, options);
+      const {
+        preview,
+        status,
+        headers: responseHeaders,
+        data,
+      } = await doRequest({
+        url: url.value,
+        method: method.value,
+        parameters: parameters.value,
+        headers: headers.value,
+        auth: auth.value,
+        body: body.value,
+      });
+
+      requestPreview.value = {
+        url: preview.url,
+        method: preview.method,
+        headers: preview.headers,
+        body: preview.body,
+      };
 
       const END = performance.now();
 
-      const data = response.data as string;
-
       const formated = await prettier
-        .format(response.data as string, {
+        .format(data as string, {
           parser: "html",
           htmlWhitespaceSensitivity: "ignore",
           plugins: [prettierPluginHtml],
@@ -172,9 +159,9 @@ export const useStore = defineStore("crld", () => {
 
       // map the response to the responsePreview
       responsePreview.value = {
-        status: response.status,
-        statusText: statusText(response.status),
-        headers: response.headers,
+        status: status,
+        statusText: statusText(status),
+        headers: responseHeaders,
         body: formated,
         size: data.length,
         executionTime: END - START,
